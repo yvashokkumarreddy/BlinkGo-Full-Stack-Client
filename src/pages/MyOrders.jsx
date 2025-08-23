@@ -13,7 +13,7 @@ const MyOrders = () => {
     try {
       const res = await Axios({
         method: 'delete',
-        url: `/api/order/delete/${orderId}` // Make sure this matches the route
+        url: `/order/delete/${orderId}` // Make sure this matches the route
       })
       toast.success(res.data.message || "Order deleted successfully")
       window.location.reload() // or refetch orders
