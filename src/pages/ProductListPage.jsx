@@ -17,7 +17,7 @@ const ProductListPage = () => {
   const AllSubCategory = useSelector(state => state.product.allSubCategory)
   const [DisplaySubCatory, setDisplaySubCategory] = useState([])
 
-  console.log(AllSubCategory)
+  console.log("params",params)
 
   const subCategory = params?.subCategory?.split("-")
   const subCategoryName = subCategory?.slice(0, subCategory?.length - 1)?.join(" ")
@@ -25,7 +25,7 @@ const ProductListPage = () => {
   const categoryId = params.category.split("-").slice(-1)[0]
   const subCategoryId = params.subCategory.split("-").slice(-1)[0]
 
-
+console.log(categoryId,"===",subCategoryId,"=====")
   const fetchProductdata = async () => {
     try {
       setLoading(true)
@@ -40,7 +40,7 @@ const ProductListPage = () => {
       })
 
       const { data: responseData } = response
-
+      console.log("data: - ",data)
       if (responseData.success) {
         if (responseData.page == 1) {
           setData(responseData.data)
@@ -64,7 +64,7 @@ const ProductListPage = () => {
   useEffect(() => {
     const sub = AllSubCategory.filter(s => {
       const filterData = s.category.some(el => {
-        return el._id == categoryId
+        return el.categoryId == categoryId
       })
 
       return filterData ? filterData : null
@@ -79,11 +79,11 @@ const ProductListPage = () => {
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
             DisplaySubCatory.map((s, index) => {
-               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?._id}/${valideURLConvert(s.name)}-${s._id}`
+               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?.categoryId}/${valideURLConvert(s.name)}-${s.subCategoryId}`
               return (
                 <Link to={link} className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 
                   hover:bg-green-100 cursor-pointer
-                  ${subCategoryId === s._id ? "bg-green-100" : ""}
+                  ${subCategoryId === s.subCategoryId ? "bg-green-100" : ""}
                 `}
                 >
                   <div className='w-fit max-w-28 mx-auto lg:mx-0 bg-white rounded  box-border' >
@@ -115,7 +115,7 @@ const ProductListPage = () => {
                     return (
                       <CardProduct
                         data={p}
-                        key={p._id + "productSubCategory" + index}
+                        key={p.productId + "productSubCategory" + index}
                       />
                     )
                   })

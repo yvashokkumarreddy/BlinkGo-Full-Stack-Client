@@ -1,9 +1,9 @@
-// import React from 'react'
+import React from 'react'
 import banner from '../assets/banner.jpg'
 import bannerMobile from '../assets/banner-mobile.jpg'
 import { useSelector } from 'react-redux'
 import { valideURLConvert } from '../utils/valideURLConvert'
-import { useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import CategoryWiseProductDisplay from '../components/CategoryWiseProductDisplay'
 
 const Home = () => {
@@ -12,21 +12,22 @@ const Home = () => {
   const subCategoryData = useSelector(state => state.product.allSubCategory)
   const navigate = useNavigate()
 
-  const handleRedirectProductListpage = (id,cat)=>{
-      console.log(id,cat)
-      const subcategory = subCategoryData.find(sub =>{
-        const filterData = sub.category.some(c => {
-          return c._id == id
-        })
+  const handleRedirectProductListpage = (categoryId, cat) => {
+    console.log(categoryId,"4567890-")
+  const subcategory = subCategoryData.find(sub =>
+  sub.categoryId === categoryId
+)
 
-        return filterData ? true : null
-      })
-      const url = `/${valideURLConvert(cat)}-${id}/${valideURLConvert(subcategory.name)}-${subcategory._id}`
-
-      navigate(url)
-      console.log(url)
-  }
-
+if (!subcategory) {
+  console.warn("No matching subcategory found for categoryId:", categoryId)
+}
+console.log("subcategory",subCategoryData)
+const subName = subcategory ? valideURLConvert(subcategory.name) : "unknown-sub"
+const subId = subcategory ? subcategory.subCategoryId : 0
+const url = `/${valideURLConvert(cat)}-${categoryId}/${subName}-${subId}`
+navigate(url)
+console.log(url)
+};
 
   return (
    <section className='bg-white'>
@@ -59,7 +60,7 @@ const Home = () => {
             ) : (
               categoryData.map((cat,index)=>{
                 return(
-                  <div key={cat._id+"displayCategory"} className='w-full h-full' onClick={()=>handleRedirectProductListpage(cat._id,cat.name)}>
+                  <div key={cat.categoryId+"displayCategory"} className='w-full h-full' onClick={()=>handleRedirectProductListpage(cat.categoryId,cat.name)}>
                     <div>
                         <img 
                           src={cat.image}
@@ -73,19 +74,20 @@ const Home = () => {
             )
           }
       </div>
+{/***display category product */}
+{
+  categoryData?.map((c, index) => {
+    return (
+      <CategoryWiseProductDisplay
+        key={c?.categoryId + "CategorywiseProduct"}
+        categoryId={c?.categoryId}  // correct prop name
+        name={c?.name}
+      />
+    );
+  })
+}
 
-      {/***display category product */}
-      {
-        categoryData?.map((c,index)=>{
-          return(
-            <CategoryWiseProductDisplay 
-              key={c?._id+"CategorywiseProduct"} 
-              id={c?._id} 
-              name={c?.name}
-            />
-          )
-        })
-      }
+
 
 
 
