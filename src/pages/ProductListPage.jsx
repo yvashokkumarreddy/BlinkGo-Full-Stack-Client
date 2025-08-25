@@ -25,7 +25,7 @@ const ProductListPage = () => {
   const categoryId = params.category.split("-").slice(-1)[0]
   const subCategoryId = params.subCategory.split("-").slice(-1)[0]
 
-console.log(categoryId,"===",subCategoryId,"=====")
+// console.log(categoryId,"===",subCategoryId,"=====")
   const fetchProductdata = async () => {
     try {
       setLoading(true)
@@ -62,16 +62,18 @@ console.log(categoryId,"===",subCategoryId,"=====")
 
 
   useEffect(() => {
-    const sub = AllSubCategory.filter(s => {
-      const filterData = s.category.some(el => {
-        return el.categoryId == categoryId
-      })
+  if (!AllSubCategory || !categoryId) return;
 
-      return filterData ? filterData : null
-    })
-    setDisplaySubCategory(sub)
-  }, [params, AllSubCategory])
+  const sub = AllSubCategory.filter(s => {
+    return s.category.some(el => String(el.categoryId) === String(categoryId));
+  });
 
+  console.log("Matched subcategories:", sub);
+  setDisplaySubCategory(sub);
+}, [params, AllSubCategory, categoryId]);
+
+
+// console.log("673829ifhbj",DisplaySubCatory,"1213131")
   return (
     <section className='sticky top-24 lg:top-20'>
       <div className='container sticky top-24  mx-auto grid grid-cols-[90px,1fr]  md:grid-cols-[200px,1fr] lg:grid-cols-[280px,1fr]'>
@@ -79,11 +81,11 @@ console.log(categoryId,"===",subCategoryId,"=====")
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
             DisplaySubCatory.map((s, index) => {
-               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?.categoryId}/${valideURLConvert(s.name)}-${s.subCategoryId}`
+               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?.categoryId}/${valideURLConvert(s.name)}-${s.categoryId}`
               return (
                 <Link to={link} className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 
                   hover:bg-green-100 cursor-pointer
-                  ${subCategoryId === s.subCategoryId ? "bg-green-100" : ""}
+                  ${subCategoryId === s._id ? "bg-green-100" : ""}
                 `}
                 >
                   <div className='w-fit max-w-28 mx-auto lg:mx-0 bg-white rounded  box-border' >

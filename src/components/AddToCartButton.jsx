@@ -26,7 +26,7 @@ const AddToCartButton = ({ data }) => {
             const response = await Axios({
                 ...SummaryApi.addTocart,
                 data: {
-                    productId: data?._id
+                    productId: data?.productId
                 }
             })
 
@@ -48,10 +48,10 @@ const AddToCartButton = ({ data }) => {
 
     //checking this item in cart or not
     useEffect(() => {
-        const checkingitem = cartItem.some(item => item.productId._id === data._id)
+        const checkingitem = cartItem.some(item => item.productId === data.productId)
         setIsAvailableCart(checkingitem)
 
-        const product = cartItem.find(item => item.productId._id === data._id)
+        const product = cartItem.find(item => item.productId === data.productId)
         setQty(product?.quantity)
         setCartItemsDetails(product)
     }, [data, cartItem])
@@ -61,7 +61,7 @@ const AddToCartButton = ({ data }) => {
         e.preventDefault()
         e.stopPropagation()
     
-       const response = await  updateCartItem(cartItemDetails?._id,qty+1)
+       const response = await  updateCartItem(cartItemDetails?.productId,qty+1)
         
        if(response.success){
         toast.success("Item added")
@@ -72,9 +72,9 @@ const AddToCartButton = ({ data }) => {
         e.preventDefault()
         e.stopPropagation()
         if(qty === 1){
-            deleteCartItem(cartItemDetails?._id)
+            deleteCartItem(cartItemDetails?.productId)
         }else{
-            const response = await updateCartItem(cartItemDetails?._id,qty-1)
+            const response = await updateCartItem(cartItemDetails?.productId,qty-1)
 
             if(response.success){
                 toast.success("Item remove")
