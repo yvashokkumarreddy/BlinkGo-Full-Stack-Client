@@ -8,7 +8,7 @@ import AxiosToastError from '../utils/AxiosToastError';
 
 const EditCategory = ({close, fetchData,data : CategoryData}) => {
     const [data,setData] = useState({
-        _id : CategoryData._id,
+        categoryId : CategoryData.categoryId,
         name : CategoryData.name,
         image : CategoryData.image
     })

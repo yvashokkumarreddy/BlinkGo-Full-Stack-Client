@@ -9,34 +9,33 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { useSelector } from 'react-redux'
 import { valideURLConvert } from '../utils/valideURLConvert'
 
-const CategoryWiseProductDisplay = ({ id, name }) => {
+const CategoryWiseProductDisplay = ({ categoryId, name }) => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
     const containerRef = useRef()
     const subCategoryData = useSelector(state => state.product.allSubCategory)
     const loadingCardNumber = new Array(6).fill(null)
 
-    const fetchCategoryWiseProduct = async () => {
-        try {
-            setLoading(true)
-            const response = await Axios({
-                ...SummaryApi.getProductByCategory,
-                data: {
-                    id: id
-                }
-            })
+   const fetchCategoryWiseProduct = async () => {
+  try {
+    setLoading(true)
+    const response = await Axios({
+      ...SummaryApi.getProductByCategory,
+      data: { categoryId } // ← this now correctly comes from props
+    })
 
-            const { data: responseData } = response
-
-            if (responseData.success) {
-                setData(responseData.data)
-            }
-        } catch (error) {
-            AxiosToastError(error)
-        } finally {
-            setLoading(false)
-        }
+    const { data: responseData } = response
+    if (responseData.success) {
+      setData(responseData.data)
     }
+  } catch (error) {
+    AxiosToastError(error)
+  } finally {
+    setLoading(false)
+  }
+}
+
+
 
     useEffect(() => {
         fetchCategoryWiseProduct()
@@ -57,12 +56,12 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
   const handleRedirectProductListpage = ()=>{
       const subcategory = subCategoryData.find(sub =>{
         const filterData = sub.category.some(c => {
-          return c._id == id
+          return c.categoryId == categoryId
         })
-
+        // console.log(filterData,"5467890-mnhgf2e12   !@")
         return filterData ? true : null
       })
-      const url = `/${valideURLConvert(name)}-${id}/${valideURLConvert(subcategory?.name)}-${subcategory?._id}`
+      const url = `/${valideURLConvert(name)}-${categoryId}/${valideURLConvert(subcategory?.name)}-${subcategory?.subCategoryId}`
 
       return url
   }
@@ -79,7 +78,7 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
                     {loading &&
                         loadingCardNumber.map((_, index) => {
                             return (
-                                <CardLoading key={"CategorywiseProductDisplay123" + index} />
+                                <CardLoading key={"CategorywiseProductDisplay" + index} />
                             )
                         })
                     }
@@ -90,7 +89,7 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
                             return (
                                 <CardProduct
                                     data={p}
-                                    key={p._id + "CategorywiseProductDisplay" + index}
+                                    key={p.productId + "CategorywiseProductDisplay" + index}
                                 />
                             )
                         })

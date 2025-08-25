@@ -14,7 +14,8 @@ import AddToCartButton from '../components/AddToCartButton'
 
 const ProductDisplayPage = () => {
   const params = useParams()
-  let productId = params?.product?.split("-")?.slice(-1)[0]
+  console.log("Parameters: ",params)
+  let productId = params?.productId
   const [data,setData] = useState({
     name : "",
     image : []
@@ -31,8 +32,8 @@ const ProductDisplayPage = () => {
             productId : productId 
           }
         })
-
         const { data : responseData } = response
+        console.log("product data",response)
 
         if(responseData.success){
           setData(responseData.data)
@@ -54,13 +55,12 @@ const ProductDisplayPage = () => {
   const handleScrollLeft = ()=>{
     imageContainer.current.scrollLeft -= 100
   }
-  console.log("product data",data)
   return (
     <section className='container mx-auto p-4 grid lg:grid-cols-2 '>
         <div className=''>
             <div className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full'>
                 <img
-                    src={data.image[image]}
+                    src={data.image}
                     className='w-full h-full object-scale-down'
                 /> 
             </div>

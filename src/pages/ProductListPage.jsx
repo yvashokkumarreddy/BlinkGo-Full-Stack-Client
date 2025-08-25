@@ -17,7 +17,7 @@ const ProductListPage = () => {
   const AllSubCategory = useSelector(state => state.product.allSubCategory)
   const [DisplaySubCatory, setDisplaySubCategory] = useState([])
 
-  console.log(AllSubCategory)
+  console.log("params",params)
 
   const subCategory = params?.subCategory?.split("-")
   const subCategoryName = subCategory?.slice(0, subCategory?.length - 1)?.join(" ")
@@ -25,7 +25,7 @@ const ProductListPage = () => {
   const categoryId = params.category.split("-").slice(-1)[0]
   const subCategoryId = params.subCategory.split("-").slice(-1)[0]
 
-
+// console.log(categoryId,"===",subCategoryId,"=====")
   const fetchProductdata = async () => {
     try {
       setLoading(true)
@@ -40,7 +40,7 @@ const ProductListPage = () => {
       })
 
       const { data: responseData } = response
-
+      console.log("data: - ",data)
       if (responseData.success) {
         if (responseData.page == 1) {
           setData(responseData.data)
@@ -62,16 +62,18 @@ const ProductListPage = () => {
 
 
   useEffect(() => {
-    const sub = AllSubCategory.filter(s => {
-      const filterData = s.category.some(el => {
-        return el._id == categoryId
-      })
+  if (!AllSubCategory || !categoryId) return;
 
-      return filterData ? filterData : null
-    })
-    setDisplaySubCategory(sub)
-  }, [params, AllSubCategory])
+  const sub = AllSubCategory.filter(s => {
+    return s.category.some(el => String(el.categoryId) === String(categoryId));
+  });
 
+  console.log("Matched subcategories:", sub);
+  setDisplaySubCategory(sub);
+}, [params, AllSubCategory, categoryId]);
+
+
+// console.log("673829ifhbj",DisplaySubCatory,"1213131")
   return (
     <section className='sticky top-24 lg:top-20'>
       <div className='container sticky top-24  mx-auto grid grid-cols-[90px,1fr]  md:grid-cols-[200px,1fr] lg:grid-cols-[280px,1fr]'>
@@ -79,7 +81,7 @@ const ProductListPage = () => {
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
             DisplaySubCatory.map((s, index) => {
-               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?._id}/${valideURLConvert(s.name)}-${s._id}`
+               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?.categoryId}/${valideURLConvert(s.name)}-${s.categoryId}`
               return (
                 <Link to={link} className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 
                   hover:bg-green-100 cursor-pointer
@@ -115,7 +117,7 @@ const ProductListPage = () => {
                     return (
                       <CardProduct
                         data={p}
-                        key={p._id + "productSubCategory" + index}
+                        key={p.productId + "productSubCategory" + index}
                       />
                     )
                   })

@@ -18,11 +18,11 @@ const SummaryApi = {
         method : 'put'
     },
     resetPassword : {
-        url : "/eslint.config.jsuser/reset-password",
+        url : "/user/reset-password",
         method : 'put'
     },
     refreshToken : {
-        url : 'api/user/refresh-token',
+        url : '/user/refresh-token',
         method : 'post'
     },
     userDetails : {
@@ -141,8 +141,6 @@ const SummaryApi = {
         url : '/address/disable',
         method : 'delete'
     },
-
-    // ✅ Order-related APIs
     CashOnDeliveryOrder : {
         url : "/order/cash-on-delivery",
         method : 'post'
@@ -152,16 +150,8 @@ const SummaryApi = {
         method : 'post'
     },
     getOrderItems : {
-        url : '/order/my-orders', // user-specific orders
+        url : '/order/order-list',
         method : 'get'
-    },
-    getAllOrders : {
-        url : '/order/all-orders', // admin: view all orders
-        method : 'get'
-    },
-    deleteOrder : {
-        url : '/order/delete', // append orderId when calling
-        method : 'delete'
     }
 }
 
