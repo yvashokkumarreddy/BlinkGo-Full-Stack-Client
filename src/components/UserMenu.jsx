@@ -27,6 +27,8 @@ const UserMenu = ({close}) => {
             }
             dispatch(logout())
             localStorage.clear()
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
             toast.success(response.data.message)
             navigate("/")
           }

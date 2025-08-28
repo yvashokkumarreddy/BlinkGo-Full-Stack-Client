@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa6";
 import toast from 'react-hot-toast';
@@ -40,7 +40,7 @@ const Login = () => {
             const response = await Axios({
                 ...SummaryApi.login,
                 data : data
-            })
+            },{ withCredentials: true })
             
             if(response.data.error){
                 toast.error(response.data.message)
@@ -48,8 +48,9 @@ const Login = () => {
 
             if(response.data.success){
                 toast.success(response.data.message)
-                localStorage.setItem('accesstoken',response.data.data.accesstoken)
-                localStorage.setItem('refreshToken',response.data.data.refreshToken)
+                console.log("response",response)
+                localStorage.setItem('accessToken',response.data.token)
+                localStorage.setItem('refreshToken',response.data.refreshToken)
 
                 const userDetails = await fetchUserDetails()
                 dispatch(setUserDetails(userDetails.data))
@@ -58,9 +59,9 @@ const Login = () => {
                     email : "",
                     password : "",
                 })
-                navigate("/")
+                // navigate("/")
             }
-
+            navigate("/")
         } catch (error) {
             AxiosToastError(error)
         }
