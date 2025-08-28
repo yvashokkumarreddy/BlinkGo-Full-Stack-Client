@@ -64,12 +64,13 @@ const ProductListPage = () => {
   useEffect(() => {
   if (!AllSubCategory || !categoryId) return;
 
-  const sub = AllSubCategory.filter(s => {
-    return s.category.some(el => String(el.categoryId) === String(categoryId));
-  });
+  const sub = AllSubCategory
+  .flat() // flatten nested arrays
+  .filter(el => String(el.categoryId) === String(categoryId));
 
-  console.log("Matched subcategories:", sub);
-  setDisplaySubCategory(sub);
+console.log("Matched subcategories:", sub);
+setDisplaySubCategory(sub);
+
 }, [params, AllSubCategory, categoryId]);
 
 
@@ -80,14 +81,20 @@ const ProductListPage = () => {
         {/**sub category **/}
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
-            DisplaySubCatory.map((s, index) => {
-               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?.categoryId}/${valideURLConvert(s.name)}-${s.categoryId}`
+            DisplaySubCatory.map((s) => {
+              console.log("each sub",s)
+               const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.categoryId}/${valideURLConvert(s.name)}-${s.subCategoryId}`
+              console.log("subcat",s)
               return (
-                <Link to={link} className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 
-                  hover:bg-green-100 cursor-pointer
-                  ${subCategoryId === s._id ? "bg-green-100" : ""}
-                `}
-                >
+                <Link 
+                    to={link} 
+                    key={s.subCategoryId} 
+                    className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 
+                      hover:bg-green-100 cursor-pointer
+                      ${subCategoryId === String(s.subCategoryId) ? "bg-green-100" : ""}
+                    `}
+                  >
+
                   <div className='w-fit max-w-28 mx-auto lg:mx-0 bg-white rounded  box-border' >
                     <img
                       src={s.image}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useSelector } from 'react-redux'
 import AddAddress from '../components/AddAddress'
 import { MdDelete } from "react-icons/md";
@@ -17,12 +17,13 @@ const Address = () => {
   const [editData, setEditData] = useState({})
   const { fetchAddress } = useGlobalContext()
 
-  const handleDisableAddress = async (id) => {
+  const handleDisableAddress = async (address_id) => {
+    console.log("address_list",addressList)
     try {
       const response = await Axios({
         ...SummaryApi.disableAddress,
         data: {
-          _id: id
+          address_id: address_id
         }
       })
       if (response.data.success) {
@@ -49,7 +50,7 @@ const Address = () => {
           addressList.map((address) => {
             return (
               <div
-                key={address._id}
+                key={address.address_id}
                 className={`border rounded p-3 flex gap-3 bg-white ${!address.status && 'hidden'}`}
               >
                 <div className='w-full'>
@@ -67,7 +68,7 @@ const Address = () => {
                     <MdEdit />
                   </button>
                   <button onClick={() =>
-                    handleDisableAddress(address._id)
+                    handleDisableAddress(address.address_id)
                   } className='bg-red-200 p-1 rounded hover:text-white hover:bg-red-600'>
                     <MdDelete size={20} />
                   </button>

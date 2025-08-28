@@ -10,8 +10,7 @@ import { useGlobalContext } from '../provider/GlobalProvider'
 const EditAddressDetails = ({close, data}) => {
     const { register, handleSubmit,reset } = useForm({
         defaultValues : {
-            _id : data._id,
-            userId : data.userId,
+            user_id : data.user_id,
             address_line :data.address_line,
             city : data.city,
             state : data.state,
