@@ -13,7 +13,7 @@ import { setOrder } from "../store/orderSlice";
 export const GlobalContext = createContext(null);
 export const useGlobalContext = () => useContext(GlobalContext);
 
-const GlobalProvider = ({ children }) => {
+const GlobalProvider = ( {children} ) => {
   const dispatch = useDispatch();
   const [totalPrice, setTotalPrice] = useState(0);
   const [notDiscountTotalPrice, setNotDiscountTotalPrice] = useState(0);
@@ -24,7 +24,9 @@ const GlobalProvider = ({ children }) => {
 
   const fetchCartItem = async () => {
     try {
-      const response = await Axios({ ...SummaryApi.getCartItem });
+      const response = await Axios({ ...SummaryApi.getCartItem,
+        data: { user_id: user.user_id },
+       });
       const { data: responseData } = response;
       if (responseData.success) {
         dispatch(handleAddItemCart(responseData.data));
@@ -34,11 +36,11 @@ const GlobalProvider = ({ children }) => {
     }
   };
 
-  const updateCartItem = async (id, qty) => {
+  const updateCartItem = async (cartItemId, qty) => {
     try {
       const response = await Axios({
         ...SummaryApi.updateCartItemQty,
-        data: { _id: id, qty },
+        data: { cartItemId: cartItemId, qty },
       });
       const { data: responseData } = response;
       if (responseData.success) {
@@ -51,11 +53,11 @@ const GlobalProvider = ({ children }) => {
     }
   };
 
-  const deleteCartItem = async (cartId) => {
+  const deleteCartItem = async (cartItemId) => {
     try {
       const response = await Axios({
         ...SummaryApi.deleteCartItem,
-        data: { _id: cartId },
+        data: { cartItemId: cartItemId },
       });
       const { data: responseData } = response;
       if (responseData.success) {
@@ -101,6 +103,7 @@ const GlobalProvider = ({ children }) => {
       }
     } catch (error) {
       // silently ignore
+      console.log(error)
     }
   };
 
