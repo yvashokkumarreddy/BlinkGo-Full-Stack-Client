@@ -26,12 +26,11 @@ const ProductDisplayPage = () => {
 
   const fetchProductDetails = async()=>{
     try {
-        const response = await Axios({
-          ...SummaryApi.getProductDetails,
-          data : {
+        const response = await Axios("/product/get-product-details",
+         {
             productId : productId 
           }
-        })
+        )
         const { data : responseData } = response
         console.log("product data",response)
 
@@ -158,7 +157,7 @@ const ProductDisplayPage = () => {
                 : (
                   // <button className='my-4 px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded'>Add</button>
                   <div className='my-4'>
-                    <AddToCartButton data={data}/>
+                    <AddToCartButton data={data.productId}/>
                   </div>
                 )
               }
