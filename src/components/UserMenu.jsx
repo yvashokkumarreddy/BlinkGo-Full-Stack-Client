@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
 import { HiOutlineExternalLink } from "react-icons/hi";
 import isAdmin from '../utils/isAdmin'
+import axios from 'axios'
 
 const UserMenu = ({close}) => {
    const user = useSelector((state)=> state.user)
@@ -27,10 +28,10 @@ const UserMenu = ({close}) => {
             }
             dispatch(logout())
             localStorage.clear()
-            localStorage.removeItem('token')
-            localStorage.removeItem('user')
-            toast.success(response.data.message)
-            navigate("/")
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
+             axios.defaults.headers.common['Authorization'] = '';
+            window.location.href = "/login";
           }
         } catch (error) {
           console.log(error)
