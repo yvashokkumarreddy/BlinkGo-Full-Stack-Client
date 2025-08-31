@@ -1,6 +1,8 @@
-
-{
-  "rewrites":[
-    {"source": "/(.*)", "destination": "/" }
-  ]
+export default async function handler(req, res) {
+  try {
+    await fetch("https://blinkgo-full-stack-server.onrender.com/api/ping");
+    res.status(200).json({ message: "Backend pinged successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Ping failed: ", details: error.message });
+  }
 }
