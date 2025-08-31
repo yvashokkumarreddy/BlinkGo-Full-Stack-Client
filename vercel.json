@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(?!ping).*",
-      "destination": "http://your-backend-url.onrender.com/api/:path*"
+      "destination": "https://blinkgo-full-stack-server.onrender.com/api/:path*"
     }
   ],
   "crons": [
