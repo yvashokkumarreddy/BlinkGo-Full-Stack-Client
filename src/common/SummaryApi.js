@@ -134,7 +134,7 @@ const SummaryApi = {
         method : 'get'
     },
     updateAddress : {
-        url : '/address/update',
+        url : '/address/update/',
         method : 'put'
     },
     disableAddress : {
