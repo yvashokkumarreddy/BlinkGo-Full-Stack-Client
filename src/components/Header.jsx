@@ -48,9 +48,9 @@ const Header = () => {
             return preve + curr.quantity
         },0)
         setTotalQty(qty)
-        
+        console.log("Cert==>",cartItem)
         const tPrice = cartItem.reduce((preve,curr)=>{
-            return preve + (curr.productId.price * curr.quantity)
+            return preve + (curr.price * curr.quantity)
         },0)
         setTotalPrice(tPrice)
 
