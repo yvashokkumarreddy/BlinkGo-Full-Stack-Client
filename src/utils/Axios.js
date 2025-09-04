@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 const Axios = axios.create({
-  baseURL:  "http://localhost:6502",
+  baseURL:  "https://blinkgo-full-stack-server.onrender.com",
 });
 
 Axios.interceptors.request.use((config) => {
