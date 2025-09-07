@@ -8,6 +8,7 @@ import { BsCart4 } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 import { GoTriangleDown, GoTriangleUp  } from "react-icons/go";
 import UserMenu from './UserMenu';
+import { pricewithDiscount } from '../utils/PriceWithDiscount'
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import DisplayCartItem from './DisplayCartItem';
@@ -48,10 +49,14 @@ const Header = () => {
             return preve + curr.quantity
         },0)
         setTotalQty(qty)
-        console.log("Cert==>",cartItem)
-        const tPrice = cartItem.reduce((preve,curr)=>{
-            return preve + (curr.price * curr.quantity)
-        },0)
+        // console.log("Cert==>",cartItem)
+        const tPrice = cartItem.reduce((preve, curr) => {
+              const priceAfterDiscount = pricewithDiscount(
+                curr?.product?.price,
+                curr?.product?.discount
+              );
+              return preve + priceAfterDiscount * curr.quantity;
+            }, 0);
         setTotalPrice(tPrice)
 
     },[cartItem])
