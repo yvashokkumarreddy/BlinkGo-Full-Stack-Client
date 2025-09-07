@@ -21,34 +21,38 @@ const AddToCartButton = ({ data }) => {
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation(); // 🔥 stop page navigation
-    if (!user?.user_id) return toast.error("User not found");
+    if (!user?.user_id || !user?.cartId) {
+      return toast.error("User cart not found");
+    }
 
     try {
       setLoading(true);
-console.log("response vasthdha:===>",data)
+
       const response = await Axios({
         ...SummaryApi.addTocart,
         data: {
-          user_id: user.user_id,
+          user_id: Number(user.user_id),
           productId: Number(data.productId),
-          cartId:user.cartId
+          cartId: Number(user.cartId),
         },
       });
 
       const { success, message } = response.data;
       if (success) {
-        toast.success(message);
-        fetchCartItem(); // sync global cart
+        toast.success(message || "Added to cart");
+        await fetchCartItem(); // sync global cart
+      } else {
+        toast.error(message || "Failed to add");
       }
     } catch (error) {
       console.error("Add to cart error:", error);
-      toast.error("Failed to add to cart");
+      toast.error(error.response?.data?.message || "Failed to add to cart");
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ Check if product is in cart
+  // ✅ Sync local state with redux cart
   useEffect(() => {
     if (!data?.productId) {
       setIsInCart(false);
@@ -57,11 +61,8 @@ console.log("response vasthdha:===>",data)
       return;
     }
 
-    const item = cartItem?.find(ci => {
-      const ciProductId = ci.product?.productId;
-      return ciProductId === Number(data.productId);
-    });
-
+    const item = cartItem?.find(ci => Number(ci.product?.productId) === Number(data.productId));
+// console.log("cartItemDetails:---",cartItem)
     if (item) {
       setIsInCart(true);
       setQty(item.quantity);
@@ -72,38 +73,33 @@ console.log("response vasthdha:===>",data)
       setCartItemDetails(null);
     }
   }, [cartItem, data]);
+// console.log("cartItemDetails:---",cartItemDetails)
+  const increaseQty = async () => {
+  if (!cartItemDetails) return;
+  const response = await updateCartItem(cartItemDetails.cartItemId, quantity + 1);
+  if (response?.success) {
+    setQty(quantity + 1);
+    fetchCartItem(); // refresh Redux state
+  }
+};
 
-  // ✅ Increase quantity
-  const increaseQty = async (e) => {
-    e.preventDefault();
-    e.stopPropagation(); // 🔥 stop page reload
-    if (!cartItemDetails) return;
-    const response = await updateCartItem(cartItemDetails.cartItemId, quantity + 1);
+const decreaseQty = async () => {
+  if (!cartItemDetails) return;
+  if (quantity === 1) {
+    const response = await deleteCartItem(cartItemDetails.cartItemId);
     if (response?.success) {
-      setQty(quantity + 1);
+      setIsInCart(false);
       fetchCartItem();
     }
-  };
-
-  // ✅ Decrease quantity
-  const decreaseQty = async (e) => {
-    e.preventDefault();
-    e.stopPropagation(); // 🔥 stop page reload
-    if (!cartItemDetails) return;
-    if (quantity === 1) {
-      const response = await deleteCartItem(cartItemDetails.cartItemId);
-      if (response?.success) {
-        setIsInCart(false);
-        fetchCartItem();
-      }
-    } else {
-      const response = await updateCartItem(cartItemDetails.cartItemId, quantity - 1);
-      if (response?.success) {
-        setQty(quantity - 1);
-        fetchCartItem();
-      }
+  } else {
+    const response = await updateCartItem(cartItemDetails.cartItemId, quantity - 1);
+    if (response?.success) {
+      setQty(quantity - 1);
+      fetchCartItem();
     }
-  };
+  }
+};
+
 
   return (
     <div
