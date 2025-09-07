@@ -36,11 +36,11 @@ const GlobalProvider = ( {children} ) => {
     }
   };
 
-  const updateCartItem = async (cartItemId, qty) => {
+  const updateCartItem = async (cartItemId, quantity) => {
     try {
       const response = await Axios({
         ...SummaryApi.updateCartItemQty,
-        data: { cartItemId: cartItemId, qty },
+        data: { cartItemId: cartItemId, quantity },
       });
       const { data: responseData } = response;
       if (responseData.success) {
@@ -75,15 +75,16 @@ const GlobalProvider = ( {children} ) => {
 
     const tPrice = cartItem.reduce((preve, curr) => {
       const priceAfterDiscount = pricewithDiscount(
-        curr?.productId?.price,
-        curr?.productId?.discount
+        curr?.product?.price,
+        curr?.product?.discount
       );
       return preve + priceAfterDiscount * curr.quantity;
     }, 0);
+    console.log("totalPrice",tPrice)
     setTotalPrice(tPrice);
 
     const notDiscountPrice = cartItem.reduce(
-      (preve, curr) => preve + curr?.productId?.price * curr.quantity,
+      (preve, curr) => preve + curr?.product?.price * curr.quantity,
       0
     );
     setNotDiscountTotalPrice(notDiscountPrice);
@@ -109,7 +110,7 @@ const GlobalProvider = ( {children} ) => {
 
   const fetchOrder = async () => {
     try {
-      const response = await Axios({ ...SummaryApi.getOrderItems });
+      const response = await Axios({ ...SummaryApi.getOrderItems,data: { user_id: user.user_id } });
       const { data: responseData } = response;
       if (responseData.success) {
         dispatch(setOrder(responseData.data));
