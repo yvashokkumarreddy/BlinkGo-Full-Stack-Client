@@ -63,7 +63,7 @@ const ProductDisplayPage = () => {
   const handleScrollLeft = () => {
     imageContainer.current.scrollLeft -= 100;
   };
-  
+  // console.log("details===>",data)
   return (
     <section className="container mx-auto p-4 grid lg:grid-cols-2">
       {/* Left Side: Images */}
@@ -181,7 +181,7 @@ const ProductDisplayPage = () => {
         ) : (
           <div className="my-4">
             {/* ✅ Pass correct productId from payload */}
-            <AddToCartButton data={productId} />
+            <AddToCartButton data={data} />
           </div>
         )}
 
