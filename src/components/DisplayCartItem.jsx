@@ -15,7 +15,7 @@ const DisplayCartItem = ({ close }) => {
     const cartItems = useSelector(state => state.cartItem.cart)
     const user = useSelector(state => state.user)
     const navigate = useNavigate()
-
+// console.log("cart items ===> love",cartItems)
     const redirectToCheckoutPage = () => {
         if (user?.user_id) {
             navigate("/checkout")
@@ -51,20 +51,27 @@ const DisplayCartItem = ({ close }) => {
                                     <div key={item.cartItemId} className='flex w-full gap-4'>
                                         <div className='w-16 h-16 min-h-16 min-w-16 bg-red-500 border rounded overflow-hidden'>
                                             <img
-                                                src={item.productId?.image?.[0]}
-                                                alt={item.productId?.name}
+                                                src={item.product?.image?.[0]}
+                                                alt={item.product?.name}
                                                 className='object-cover w-full h-full'
                                             />
                                         </div>
 
                                         <div className='w-full max-w-sm text-xs'>
-                                            <p className='text-xs text-ellipsis line-clamp-2'>{item.productId?.name}</p>
-                                            <p className='text-neutral-400'>{item.productId?.unit}</p>
-                                            <p className='font-semibold'>{DisplayPriceInRupees(pricewithDiscount(item.productId?.price, item.productId?.discount))}</p>
+                                            <p className='text-xs text-ellipsis line-clamp-2'>{item.product?.name}</p>
+                                            <p className='text-neutral-400'>{item.product?.unit}</p>
+                                            <p className='font-semibold'>{DisplayPriceInRupees(pricewithDiscount(item.product?.price, item.product?.discount))}</p>
                                         </div>
 
                                         <div>
-                                            <AddToCartButton data={item.productId} />
+                                            <AddToCartButton 
+                                                data={{
+                                                    productId: item.product.productId,
+                                                    user_id: user.user_id,
+                                                    cartId: user.cartId
+                                                }} 
+                                                />
+
                                         </div>
                                     </div>
                                 ))}
