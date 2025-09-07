@@ -7,13 +7,11 @@ import AddToCartButton from './AddToCartButton'
 
 const CardProduct = ({ data }) => {
 
-  const url = `/product/${valideURLConvert(data.name)}-${data.productId}`
+  const url = `/product/${data.productId}`
 
   return (
-    <Link 
-      to={url} 
-      className="border py-2 lg:p-4 grid gap-1 lg:gap-3 min-w-36 lg:min-w-52 rounded cursor-pointer bg-white"
-    >
+    <div className ="border py-2 lg:p-4 grid gap-1 lg:gap-3 min-w-36 lg:min-w-52 rounded cursor-pointer bg-white">
+    <Link to={url}>
       {/* Product Image */}
       <div className="min-h-20 w-full max-h-24 lg:max-h-32 rounded overflow-hidden">
         <img 
@@ -41,15 +39,18 @@ const CardProduct = ({ data }) => {
       </div>
 
       {/* Unit */}
-      <div className="w-fit gap-1 px-2 lg:px-0 text-sm lg:text-base">
-        {data.unit}
+      <div className="w-fit gap-1 flex px-2 lg:px-0 text-sm lg:text-base">
+       <div className="text-black-900 text-sm ">
+            M.R.P <span className="line-through text-green-600">{DisplayPriceInRupees(pricewithDiscount(data.price))}</span>
+          </div>
       </div>
-
+      </Link>
+      
       {/* Price + Add to Cart */}
       <div className="px-2 lg:px-0 flex items-center justify-between gap-1 lg:gap-3 text-sm lg:text-base">
-        <div className="flex items-center gap-1">
+        <div className="flex flex-col items-end gap-2">
           <div className="font-semibold">
-            {DisplayPriceInRupees(pricewithDiscount(data.price, data.discount))}
+            {DisplayPriceInRupees(pricewithDiscount(data.price,data.discount))}
           </div>
         </div>
         <div>
@@ -60,7 +61,8 @@ const CardProduct = ({ data }) => {
           )}
         </div>
       </div>
-    </Link>
+      
+    </div>
   )
 }
 
