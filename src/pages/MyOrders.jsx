@@ -4,19 +4,24 @@ import Axios from '../utils/Axios'
 import toast from 'react-hot-toast'
 import NoData from '../components/NoData'
 import AxiosToastError from '../utils/AxiosToastError'
+import { useGlobalContext } from '../provider/GlobalProvider'
 
 const MyOrders = () => {
-  const orders = useSelector(state => state.orders.order)
+    const {fetchOrder } = useGlobalContext()
+      const orders = useSelector(state => state.orders.order)
   //const [, forceUpdate] = useReducer(x => x + 1, 0)
-
+console.log("jgdigdui",orders)
   const handleDeleteOrder = async (orderId) => {
     try {
       const res = await Axios({
-        method: 'delete',
-        url: `/order/delete/${orderId}` // Make sure this matches the route
-      })
+        method: 'post',
+        url: `/order/delete`, // Make sure this matches the route
+      data:{order_no:orderId}})
       toast.success(res.data.message || "Order deleted successfully")
-      window.location.reload() // or refetch orders
+      // window.location.reload() // or refetch orders
+      if (fetchOrder) {
+          fetchOrder()
+        }
     } catch (err) {
       AxiosToastError(err)
     }
@@ -33,11 +38,11 @@ const MyOrders = () => {
           <NoData />
         ) : (
           orders.map((order, index) => (
-            <div key={order._id + index + "order"} className='order rounded p-4 text-sm border shadow mb-4 bg-white'>
+            <div key={order.orderId + index + "order"} className='order rounded p-4 text-sm border shadow mb-4 bg-white'>
               <div className='flex justify-between items-center'>
                 <p><strong>Order No:</strong> {order?.orderId}</p>
                 <button
-                  onClick={() => handleDeleteOrder(order._id)}
+                  onClick={() => handleDeleteOrder(order.order_no)}
                   className='text-red-600 hover:underline text-xs'
                 >
                   Delete
