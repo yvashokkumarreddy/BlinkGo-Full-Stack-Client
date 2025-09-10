@@ -107,7 +107,18 @@ const GlobalProvider = ( {children} ) => {
       console.log(error)
     }
   };
-
+  const fetchAllOrders = async () => {
+    try {
+      const response = await Axios({ ...SummaryApi.getAllOrders });
+      const { data: responseData } = response;
+      if (responseData.success) {
+        dispatch(handleAddAddress(responseData.data));
+      }
+    } catch (error) {
+      // silently ignore
+      console.log(error)
+    }
+  };
   const fetchOrder = async () => {
     try {
       const response = await Axios({ ...SummaryApi.getOrderItems,data: { user_id: user.user_id } });
@@ -119,6 +130,8 @@ const GlobalProvider = ( {children} ) => {
       console.log(error);
     }
   };
+ 
+ 
 
   useEffect(() => {
     fetchCartItem();
@@ -133,6 +146,7 @@ const GlobalProvider = ( {children} ) => {
         updateCartItem,
         deleteCartItem,
         fetchAddress,
+        fetchAllOrders,
         fetchOrder,
         totalPrice,
         totalQty,
