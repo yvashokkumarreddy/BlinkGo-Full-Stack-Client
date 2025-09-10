@@ -23,6 +23,7 @@ import CartMobile from "../pages/CartMobile";
 import CheckoutPage from "../pages/CheckoutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
+import AllOrders from "../pages/AllOrders";
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
                     {
                         path : "profile",
                         element : <Profile/>
+                    },
+                    {
+                        path : "orders",
+                        element : <AllOrders/>
                     },
                     {
                         path : "myorders",

@@ -10,10 +10,12 @@ import AxiosToastError from '../utils/AxiosToastError'
 import { HiOutlineExternalLink } from "react-icons/hi";
 import isAdmin from '../utils/isAdmin'
 import axios from 'axios'
+import { useGlobalContext } from '../provider/GlobalProvider'
 
 const UserMenu = ({close}) => {
    const user = useSelector((state)=> state.user)
    const dispatch = useDispatch()
+   const { fetchOrder, fetchAllOrders } = useGlobalContext()
    const navigate = useNavigate()
 
    const handleLogout = async()=>{
@@ -43,7 +45,19 @@ const UserMenu = ({close}) => {
       if(close){
         close()
       }
+      }
+      const handleApiCall = ()=>{
+        if(close){
+        close()
+      }
+      fetchOrder()
    }
+   const handleAllorders = ()=>{
+        if(close){
+        close()
+      }
+       fetchAllOrders()
+    }
   return (
     <div>
         <div className='font-semibold'>My Account</div>
@@ -80,9 +94,11 @@ const UserMenu = ({close}) => {
                 <Link onClick={handleClose} to={"/dashboard/product"} className='px-2 hover:bg-orange-200 py-1'>Product</Link>
               )
             }
-            
-            <Link onClick={handleClose} to={"/dashboard/myorders"} className='px-2 hover:bg-orange-200 py-1'>My Orders</Link>
-            
+            {isAdmin(user.role)?(
+            <Link onClick={handleAllorders} to={"/dashboard/orders"} className='px-2 hover:bg-orange-200 py-1'>Orders</Link>
+            ):(
+            <Link onClick={handleApiCall} to={"/dashboard/myorders"} className='px-2 hover:bg-orange-200 py-1'>My Orders</Link>
+            )}            
             <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-orange-200 py-1'>Save Address</Link>
 
             <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'>Log Out</button>
