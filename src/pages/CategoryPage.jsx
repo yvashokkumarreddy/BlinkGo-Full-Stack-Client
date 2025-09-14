@@ -21,7 +21,7 @@ const CategoryPage = () => {
     })
     const [openConfimBoxDelete,setOpenConfirmBoxDelete] = useState(false)
     const [deleteCategory,setDeleteCategory] = useState({
-        _id : ""
+        categoryId : ""
     })
     // const allCategory = useSelector(state => state.product.allCategory)
 
@@ -70,7 +70,6 @@ const CategoryPage = () => {
             AxiosToastError(error)
         }
     }
-
   return (
     <section className=''>
         <div className='p-2   bg-white shadow-md flex items-center justify-between'>
@@ -87,7 +86,7 @@ const CategoryPage = () => {
             {
                 categoryData.map((category,index)=>{
                     return(
-                        <div className='w-32 h-56 rounded shadow-md' key={category._id}>
+                        <div className='w-32 h-56 rounded shadow-md' key={category.categoryId}>
                             <img 
                                 alt={category.name}
                                 src={category.image}

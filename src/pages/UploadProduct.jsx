@@ -18,6 +18,8 @@ const UploadProduct = () => {
       name : "",
       image : [],
       category : [],
+      categoryId: "",
+      subCategoryId: "",
       subCategory : [],
       unit : "",
       stock : "",
@@ -78,7 +80,9 @@ const UploadProduct = () => {
     setFieldName("")
     setOpenAddField(false)
   }
-
+  
+// console.log("allcategores",allCategory)
+// console.log("allsubcategories",allSubCategory)
   const handleSubmit = async(e)=>{
     e.preventDefault()
     try {
@@ -90,6 +94,8 @@ const UploadProduct = () => {
           name : "",
           image : [],
           category : [],
+          categoryId: "",
+          subCategoryId: "",
           subCategory : [],
           unit : "",
           stock : "",
@@ -103,6 +109,7 @@ const UploadProduct = () => {
       AxiosToastError(error)
     }
   }
+  // console.log("all categories", allCategory)
 
   return (
     <section className=''>
@@ -137,47 +144,57 @@ const UploadProduct = () => {
             </div>
           </div>
 
-          <div className='grid gap-1'>
-            <label className='font-medium'>Category</label>
-            <select className='bg-blue-50 border w-full p-2 rounded' value={selectCategory} onChange={(e)=>{
-              const value = e.target.value 
-              const category = allCategory.find(el => el._id === value )
-              setData((preve)=>({ ...preve, category : [...preve.category,category] }))
-              setSelectCategory("")
-            }}>
-              <option value={""}>Select Category</option>
-              {allCategory.map((c) => (<option key={c._id} value={c._id}>{c.name}</option>))}
-            </select>
-            <div className='flex flex-wrap gap-3'>
-              {data.category.map((c,index)=>(
-                <div key={`${c._id}-${index}`} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
-                  <p>{c.name}</p>
-                  <div className='hover:text-red-500 cursor-pointer' onClick={()=>handleRemoveCategory(index)}><IoClose size={20}/></div>
-                </div>
-              ))}
-            </div>
-          </div>
+{/* Category Dropdown */}
+<div className="grid gap-1">
+  <label className="font-medium">Category</label>
+  <select
+    className="bg-blue-50 border w-full p-2 rounded"
+    value={data.categoryId}
+    onChange={(e) => {
+      setData((prev) => ({
+        ...prev,
+        categoryId: Number(e.target.value),
+        subCategoryId: "", // reset subCategory when category changes
+      }));
+    }}
+  >
+    <option value="">Select Category</option>
+    {allCategory.map((c) => (
+      <option key={c.categoryId} value={c.categoryId}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+</div>
 
-          <div className='grid gap-1'>
-            <label className='font-medium'>Sub Category</label>
-            <select className='bg-blue-50 border w-full p-2 rounded' value={selectSubCategory} onChange={(e)=>{
-              const value = e.target.value 
-              const subCategory = allSubCategory.find(el => el._id === value )
-              setData((preve)=>({ ...preve, subCategory : [...preve.subCategory,subCategory] }))
-              setSelectSubCategory("")
-            }}>
-              <option value={""} className='text-neutral-600'>Select Sub Category</option>
-              {allSubCategory.map((c) => (<option key={c._id} value={c._id}>{c.name}</option>))}
-            </select>
-            <div className='flex flex-wrap gap-3'>
-              {data.subCategory.map((c,index)=>(
-                <div key={`${c._id}-${index}`} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
-                  <p>{c.name}</p>
-                  <div className='hover:text-red-500 cursor-pointer' onClick={()=>handleRemoveSubCategory(index)}><IoClose size={20}/></div>
-                </div>
-              ))}
-            </div>
-          </div>
+
+{/* SubCategory Dropdown (depends on Category) */}
+<div className="grid gap-1">
+  <label className="font-medium">Sub Category</label>
+<select
+  className='w-full p-2 bg-transparent outline-none border'
+  value={data.subCategoryId}
+  onChange={(e) =>
+    setData(prev => ({
+      ...prev,
+      subCategoryId: Number(e.target.value)   // 🔥 convert to number
+    }))
+  }
+>
+  <option value="">Select Subcategory</option>
+  {allSubCategory
+    .filter(sc => sc.categoryId === Number(data.categoryId))   // 🔥 ensure both are numbers
+    .map(sc => (
+      <option key={sc.subCategoryId} value={sc.subCategoryId}>
+        {sc.name}
+      </option>
+    ))}
+</select>
+
+</div>
+
+
+
 
           <div className='grid gap-1'>
             <label htmlFor='unit' className='font-medium'>Unit</label>

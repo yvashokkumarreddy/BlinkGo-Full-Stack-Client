@@ -15,9 +15,11 @@ import { useEffect } from 'react';
 
 const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
   const [data, setData] = useState({
-    _id : propsData._id,
+    productId : propsData.productId,
     name: propsData.name,
     image: propsData.image,
+    categoryId:propsData.categoryId,
+    subCategoryId: propsData.subCategoryId,
     category: propsData.category,
     subCategory: propsData.subCategory,
     unit: propsData.unit,
@@ -79,22 +81,22 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
     })
   }
 
-  const handleRemoveCategory = async (index) => {
-    data.category.splice(index, 1)
-    setData((preve) => {
-      return {
-        ...preve
-      }
-    })
-  }
-  const handleRemoveSubCategory = async (index) => {
-    data.subCategory.splice(index, 1)
-    setData((preve) => {
-      return {
-        ...preve
-      }
-    })
-  }
+  // const handleRemoveCategory = async (index) => {
+  //   data.category.splice(index, 1)
+  //   setData((preve) => {
+  //     return {
+  //       ...preve
+  //     }
+  //   })
+  // }
+  // const handleRemoveSubCategory = async (index) => {
+  //   data.subCategory.splice(index, 1)
+  //   setData((preve) => {
+  //     return {
+  //       ...preve
+  //     }
+  //   })
+  // }
 
   const handleAddField = () => {
     setData((preve) => {
@@ -132,6 +134,8 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
           image: [],
           category: [],
           subCategory: [],
+          categoryId:"",
+          subCategoryId:"",
           unit: "",
           stock: "",
           price: "",
@@ -238,15 +242,16 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                 <div>
                   <select
                     className='bg-blue-50 border w-full p-2 rounded'
-                    value={selectCategory}
+                    value={data.categoryId}
                     onChange={(e) => {
                       const value = e.target.value
-                      const category = allCategory.find(el => el._id === value)
+                      const category = allCategory.find(el => el.categoryId === value)
 
                       setData((preve) => {
                         return {
                           ...preve,
                           category: [...preve.category, category],
+                          categoryId: value,
                         }
                       })
                       setSelectCategory("")
@@ -256,16 +261,16 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                     {
                       allCategory.map((c, index) => {
                         return (
-                          <option value={c?._id}>{c.name}</option>
+                          <option value={c?.categoryId}>{c.name}</option>
                         )
                       })
                     }
                   </select>
-                  <div className='flex flex-wrap gap-3'>
+                  {/* <div className='flex flex-wrap gap-3'>
                     {
                       data.category.map((c, index) => {
                         return (
-                          <div key={c._id + index + "productsection"} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
+                          <div key={c.categoryId + index + "productsection"} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
                             <p>{c.name}</p>
                             <div className='hover:text-red-500 cursor-pointer' onClick={() => handleRemoveCategory(index)}>
                               <IoClose size={20} />
@@ -274,7 +279,7 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                         )
                       })
                     }
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className='grid gap-1'>
@@ -282,15 +287,16 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                 <div>
                   <select
                     className='bg-blue-50 border w-full p-2 rounded'
-                    value={selectSubCategory}
+                    value={data.subCategoryId}
                     onChange={(e) => {
                       const value = e.target.value
-                      const subCategory = allSubCategory.find(el => el._id === value)
+                      const subCategory = allSubCategory.find(el => el.subCategoryId === value)
 
                       setData((preve) => {
                         return {
                           ...preve,
-                          subCategory: [...preve.subCategory, subCategory]
+                          subCategory: [...preve.subCategory, subCategory],
+                          subCategoryId: value
                         }
                       })
                       setSelectSubCategory("")
@@ -300,16 +306,16 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                     {
                       allSubCategory.map((c, index) => {
                         return (
-                          <option value={c?._id}>{c.name}</option>
+                          <option value={c?.subCategoryId}>{c.name}</option>
                         )
                       })
                     }
                   </select>
-                  <div className='flex flex-wrap gap-3'>
+                  {/* <div className='flex flex-wrap gap-3'>
                     {
                       data.subCategory.map((c, index) => {
                         return (
-                          <div key={c._id + index + "productsection"} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
+                          <div key={c.subCategoryId + index + "productsection"} className='text-sm flex items-center gap-1 bg-blue-50 mt-2'>
                             <p>{c.name}</p>
                             <div className='hover:text-red-500 cursor-pointer' onClick={() => handleRemoveSubCategory(index)}>
                               <IoClose size={20} />
@@ -318,7 +324,7 @@ const EditProductAdmin = ({ close ,data : propsData,fetchProductData}) => {
                         )
                       })
                     }
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

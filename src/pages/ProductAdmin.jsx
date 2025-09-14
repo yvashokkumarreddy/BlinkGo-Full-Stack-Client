@@ -75,8 +75,8 @@ const ProductAdmin = () => {
       clearTimeout(interval)
     }
   },[search])
-
-  return (
+  
+    return (
     <section className=''>
         <div className='p-2 bg-white shadow-md flex items-center justify-between gap-4'>
                 <h2 className='font-semibold'>Product</h2>
@@ -102,7 +102,7 @@ const ProductAdmin = () => {
               <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
                 {
                   productData.map((p) => (
-                    <ProductCardAdmin key={p._id} data={p} fetchProductData={fetchProductData} />
+                    <ProductCardAdmin key={p.productId} data={p} fetchProductData={fetchProductData} />
                   ))
                 }
               </div>

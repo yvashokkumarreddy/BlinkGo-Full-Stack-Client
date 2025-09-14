@@ -20,7 +20,7 @@ const ProductCardAdmin = ({ data, fetchProductData }) => {
       const response = await Axios({
         ...SummaryApi.deleteProduct,
         data : {
-          _id : data._id
+          productId : data.productId
         }
       })
 

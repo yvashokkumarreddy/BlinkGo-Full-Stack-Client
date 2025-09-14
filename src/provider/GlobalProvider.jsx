@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { pricewithDiscount } from "../utils/PriceWithDiscount";
 import { handleAddAddress } from "../store/addressSlice";
 import { setOrder } from "../store/orderSlice";
+import { handleAllOrders } from "../store/adminOrdersSlice";
 
 // ✅ Context + Hook (named exports only)
 export const GlobalContext = createContext(null);
@@ -108,17 +109,30 @@ const GlobalProvider = ( {children} ) => {
     }
   };
   const fetchAllOrders = async () => {
-    try {
-      const response = await Axios({ ...SummaryApi.getAllOrders });
-      const { data: responseData } = response;
-      if (responseData.success) {
-        dispatch(handleAddAddress(responseData.data));
+  try {
+    const response = await Axios({ ...SummaryApi.getAllOrders });
+    const { data: responseData } = response;
+
+    console.log("All Orders API Response:", responseData);
+
+    if (responseData.success) {
+      // Check what exactly comes from backend
+      let orders = [];
+
+      if (Array.isArray(responseData.data)) {
+        orders = responseData.data;   // ✅ plain array
+      } else if (Array.isArray(responseData.data?.orders)) {
+        orders = responseData.data.orders; // ✅ wrapped in object
+      } else {
+        console.warn("Unexpected orders format:", responseData.data);
       }
-    } catch (error) {
-      // silently ignore
-      console.log(error)
+
+      dispatch(handleAllOrders(orders));
     }
-  };
+  } catch (error) {
+    console.error("Fetch All Orders Error:", error);
+  }
+};
   const fetchOrder = async () => {
     try {
       const response = await Axios({ ...SummaryApi.getOrderItems,data: { user_id: user.user_id } });
