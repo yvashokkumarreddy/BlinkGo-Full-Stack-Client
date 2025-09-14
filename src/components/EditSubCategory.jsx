@@ -8,12 +8,14 @@ import toast from 'react-hot-toast';
 import AxiosToastError from '../utils/AxiosToastError';
 
 const EditSubCategory = ({close,data,fetchData}) => {
-    const [subCategoryData,setSubCategoryData] = useState({
-        _id : data._id,
-        name : data.name,
-        image : data.image,
-        category : data.category || []
-    })
+    const [subCategoryData, setSubCategoryData] = useState({
+        subCategoryId: data.subCategoryId,
+        name: data.name,
+        image: data.image,
+        category: data.category || [],
+        categoryId: data.categoryId 
+        });
+
     const allCategory = useSelector(state => state.product.allCategory)
 
 
@@ -141,11 +143,8 @@ const EditSubCategory = ({close,data,fetchData}) => {
                                 {
                                     subCategoryData.category.map((cat,index)=>{
                                         return(
-                                            <p key={cat._id+"selectedValue"} className='bg-white shadow-md px-1 m-1 flex items-center gap-2'>
+                                            <p key={cat.categoryId+"selectedValue"} className='bg-white shadow-md px-1 m-1 flex items-center gap-2'>
                                                 {cat.name}
-                                                <div className='cursor-pointer hover:text-red-600' onClick={()=>handleRemoveCategorySelected(cat._id)}>
-                                                    <IoClose size={20}/>
-                                                </div>
                                             </p>
                                         )
                                     })
@@ -153,29 +152,30 @@ const EditSubCategory = ({close,data,fetchData}) => {
                             </div>
 
                             {/*select category**/}
-                            <select
-                                className='w-full p-2 bg-transparent outline-none border'
-                                onChange={(e)=>{
-                                    const value = e.target.value
-                                    const categoryDetails = allCategory.find(el => el._id == value)
-                                    
-                                    setSubCategoryData((preve)=>{
-                                        return{
-                                            ...preve,
-                                            category : [...preve.category,categoryDetails]
-                                        }
-                                    })
-                                }}
-                            >
-                                <option value={""}>Select Category</option>
-                                {
-                                    allCategory.map((category,index)=>{
-                                        return(
-                                            <option value={category?._id} key={category._id+"subcategory"}>{category?.name}</option>
-                                        )
-                                    })
-                                }
-                            </select>
+                            <div className='grid gap-1'>
+                        
+                        <select
+                            className='w-full p-2 bg-transparent outline-none border'
+                            value={subCategoryData.categoryId}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const categoryDetails = allCategory.find(el => el.categoryId == value);
+
+                                setSubCategoryData(prev => ({
+                                    ...prev,
+                                    categoryId: value,
+                                    category: categoryDetails ? [{ _id: categoryDetails._id }] : []
+                                }));
+                            }}
+                        >
+                            <option value={""}>Select Category</option>
+                            {allCategory.map(category => (
+                                <option value={category?.categoryId} key={category.categoryId}>
+                                    {category?.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                         </div>
                     </div>
 
