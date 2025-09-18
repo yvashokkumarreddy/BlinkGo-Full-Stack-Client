@@ -9,7 +9,7 @@ const Dashboard = () => {
   console.log("user dashboard:", user)
 
   return (
-    <section className="bg-white">
+    <section className="bg-gary">
       <div className="container mx-auto p-3 grid lg:grid-cols-[250px,1fr] gap-4">
         
         {/* Left Sidebar Menu */}
