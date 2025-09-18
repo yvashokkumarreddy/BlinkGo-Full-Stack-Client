@@ -29,6 +29,10 @@ const SummaryApi = {
         url : '/user/user-details',
         method : "get"
     },
+    userDetailsById : {
+        url : '/user/idDetails',
+        method : "post"
+    },
     logout : {
         url : "/user/logout",
         method : 'get'
@@ -156,6 +160,18 @@ const SummaryApi = {
     getAllOrders : {
         url : '/order/all-orders',
         method : 'post'
+    },
+    getOrderById : {
+        url : '/order/order-details',
+        method : 'post'
+    },
+    reserveItems : {
+        url : '/order/admin/reserve-items',
+        method : 'get'
+    },
+    dataImports : {
+        url : '/product/download-template',
+        method: 'post'
     }
 }
 
