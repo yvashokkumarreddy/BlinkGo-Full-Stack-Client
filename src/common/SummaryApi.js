@@ -165,6 +165,10 @@ const SummaryApi = {
         url : '/order/order-details',
         method : 'post'
     },
+    updateOrderStatus: {
+    method: "POST",
+    url: "/order/update-order-status",
+  },
     reserveItems : {
         url : '/order/admin/reserve-items',
         method : 'get'
