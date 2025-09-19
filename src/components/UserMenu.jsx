@@ -60,9 +60,9 @@ const UserMenu = ({close}) => {
     }
   return (
     <div>
-        <div className='font-semibold'>My Account</div>
+        <div className='px-3 font-semibold'>My Account</div>
         <div className='text-sm flex items-center gap-2'>
-          <span className='max-w-52 text-ellipsis line-clamp-1'>{user.name || user.mobile} <span className='text-medium text-red-600'>{user.role === "ADMIN" ? "(Admin)" : "" }</span></span>
+          <span className='max-w-52 text-ellipsis line-clamp-1 px-3'>{user.name || user.mobile} <span className='text-medium text-red-600'>{user.role === "ADMIN" ? "(Admin)" : "" }</span></span>
           <Link onClick={handleClose} to={"/dashboard/profile"} className='hover:text-primary-200'>
             <HiOutlineExternalLink size={15}/>
           </Link>
@@ -70,7 +70,7 @@ const UserMenu = ({close}) => {
 
         <Divider/>
 
-        <div className='text-sm grid gap-1'>
+        <div className='px-3 hover:bg-blue text-sm grid gap-1'>
             {
               isAdmin(user.role) && (
                 <Link onClick={handleClose} to={"/dashboard/category"} className='px-2 hover:bg-orange-200 py-1'>Category</Link>
@@ -102,7 +102,11 @@ const UserMenu = ({close}) => {
             <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-orange-200 py-1'>Save Address</Link>
 
             <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'>Log Out</button>
-
+            {
+              isAdmin(user.role) && (
+                <Link onClick={handleClose} to={"/dashboard/dataImport"} className='px-2 hover:bg-orange-200 py-1'>Data Import</Link>
+              )
+            }
         </div>
     </div>
   )

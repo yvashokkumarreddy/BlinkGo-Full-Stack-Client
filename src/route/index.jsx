@@ -24,113 +24,84 @@ import CheckoutPage from "../pages/CheckoutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
 import AllOrders from "../pages/AllOrders";
+import DataImportPage from "../pages/DataImportPage";
+import OrderDetails from "../pages/OrderDetailsPage"; // ✅ fixed import name
 
 const router = createBrowserRouter([
-    {
-        path : "",
-        element : <App/>,
-        children : [
-            {
-                path : "/",
-                element : <Home/>
-            },
-            {
-                path : "search",
-                element : <SearchPage/>
-            },
-            {
-                path : 'login',
-                element : <Login/>
-            },
-            {
-                path : "register",
-                element : <Register/>
-            },
-            {
-                path : "forgot-password",
-                element : <ForgotPassword/>
-            },
-            {
-                path : "verification-otp",
-                element : <OtpVerification/>
-            },
-            {
-                path : "reset-password",
-                element : <ResetPassword/>
-            },
-            {
-                path : "user",
-                element : <UserMenuMobile/>
-            },
-            {
-                path : "dashboard",
-                element : <Dashboard/>,
-                children : [
-                    {
-                        path : "profile",
-                        element : <Profile/>
-                    },
-                    {
-                        path : "orders",
-                        element : <AllOrders/>
-                    },
-                    {
-                        path : "myorders",
-                        element : <MyOrders/>
-                    },
-                    {
-                        path : "address",
-                        element : <Address/>
-                    },
-                    {
-                        path : 'category',
-                        element : <AdminPermision><CategoryPage/></AdminPermision>
-                    },
-                    {
-                        path : "subcategory",
-                        element : <AdminPermision><SubCategoryPage/></AdminPermision>
-                    },
-                    {
-                        path : 'upload-product',
-                        element : <AdminPermision><UploadProduct/></AdminPermision>
-                    },
-                    {
-                        path : 'product',
-                        element : <AdminPermision><ProductAdmin/></AdminPermision>
-                    }
-                ]
-            },
-            {
-                path : ":category",
-                children : [
-                    {
-                        path : ":subCategory",
-                        element : <ProductListPage/>
-                    }
-                ]
-            },
-            {
-                path : "product/:productId",
-                element : <ProductDisplayPage/>
-            },
-            {
-                path : 'cart',
-                element : <CartMobile/>
-            },
-            {
-                path : "checkout",
-                element : <CheckoutPage/>
-            },
-            {
-                path : "success",
-                element : <Success/>
-            },
-            {
-                path : 'cancel',
-                element : <Cancel/>
-            }
-        ]
-    }
-])
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { path: "", element: <Home /> },
+      { path: "search", element: <SearchPage /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
+      { path: "verification-otp", element: <OtpVerification /> },
+      { path: "reset-password", element: <ResetPassword /> },
+      { path: "user", element: <UserMenuMobile /> },
+      { path: "order-details", element: <OrderDetails /> },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+        children: [
+          { path: "profile", element: <Profile /> },
+          { path: "orders", element: <AllOrders /> }, // ✅ fixed
+          { path: "myorders", element: <MyOrders /> },
+          { path: "address", element: <Address /> },
+          {
+            path: "category",
+            element: (
+              <AdminPermision>
+                <CategoryPage />
+              </AdminPermision>
+            ),
+          },
+          {
+            path: "subcategory",
+            element: (
+              <AdminPermision>
+                <SubCategoryPage />
+              </AdminPermision>
+            ),
+          },
+          {
+            path: "upload-product",
+            element: (
+              <AdminPermision>
+                <UploadProduct />
+              </AdminPermision>
+            ),
+          },
+          {
+            path: "product",
+            element: (
+              <AdminPermision>
+                <ProductAdmin />
+              </AdminPermision>
+            ),
+          },
+          {
+            path: "dataImport",
+            element: (
+              <AdminPermision>
+                <DataImportPage />
+              </AdminPermision>
+            ),
+          },
+        ],
+      },
+      {
+        path: ":category",
+        children: [{ path: ":subCategory", element: <ProductListPage /> }],
+      },
+      { path: "product/:productId", element: <ProductDisplayPage /> },
+      { path: "cart", element: <CartMobile /> },
+      { path: "checkout", element: <CheckoutPage /> },
+      { path: "success", element: <Success /> },
+      { path: "cancel", element: <Cancel /> },
+    ],
+  },
+]);
 
-export default router
+export default router;
