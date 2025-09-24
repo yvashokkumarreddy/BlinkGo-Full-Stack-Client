@@ -1,49 +1,35 @@
 import { useSelector } from 'react-redux'
-import Axios from '../utils/Axios'
-import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 import NoData from '../components/NoData'
-import AxiosToastError from '../utils/AxiosToastError'
+import { FiEye } from "react-icons/fi";
 
 const MyOrders = () => {
-  const orders = useSelector(state => state.orders.order) // Redux orders
-
-  const handleDeleteOrder = async (order_no) => {
-    try {
-      const res = await Axios({
-        method: 'post',
-        url: '/order/delete',
-        data: { order_no }
-      })
-      toast.success(res.data.message || "Order deleted successfully")
-      // Optionally refetch orders here
-    } catch (err) {
-      AxiosToastError(err)
-    }
-  }
+  const orders = useSelector(state => state.orders.order)
+  
+  const navigate = useNavigate()
 
   if (!orders?.length) return <NoData />
 
   return (
-    <div className="p-0">
+    <div className="p-0 bg-blue-100">
       <h1 className="text-2xl font-semibold mb-4">My Orders</h1>
       <div className="overflow-x-auto shadow rounded-lg bg-white">
         <table className="min-w-full border-collapse text-sm text-left">
           <thead className="bg-blue-400 text-gray-700 text-sm">
             <tr>
-              <th className="p-3 border">Order No</th>
-              <th className="p-3 border">Items</th>
+              <th className="p-5 border">Order No</th>
+              <th className="p-2 border">Items</th>
               <th className="p-3 border">Delivery Address</th>
-              <th className="p-2 border">Payment</th>
               <th className="p-3 border">Total</th>
               <th className="p-3 border">Status</th>
               <th className="p-3 border">Placed On</th>
-              <th className="p-3 border">Action</th>
+              <th className="p-2 border">Action</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order, index) => (
-              <tr key={order.orderId + index} className="hover:bg-gray-50">
-                <td className="p-2 border font-medium">{order.orderId}</td>
+              <tr key={order.orderId + index} className="hover:bg-blue-200 bg-blue-100">
+                <td className="p-3 border font-medium">{order.orderId}</td>
 
                 <td className="p-3 border">
                   {order.items.map((item, idx) => (
@@ -64,15 +50,12 @@ const MyOrders = () => {
                       <p>{order.delivery_address.address_line}</p>
                       <p>{order.delivery_address.city}, {order.delivery_address.state}</p>
                       <p>{order.delivery_address.country} - {order.delivery_address.pincode}</p>
-                      <p>📞 {order.delivery_address.mobile}</p>
                     </>
                   ) : "N/A"}
                 </td>
 
-                <td className="p-3 border">{order.payment_status}</td>
                 <td className="p-3 border font-semibold">₹{order.totalAmt}</td>
 
-                {/* ✅ Order Status */}
                 <td className="p-3 border">
                   <span
                     className={`px-2 py-1 rounded text-xs font-medium ${
@@ -87,10 +70,9 @@ const MyOrders = () => {
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                {order.status}
-              </span>
-            </td>
-
+                    {order.status}
+                  </span>
+                </td>
 
                 <td className="p-3 border">
                   {new Date(order.createdAt).toLocaleDateString("en-IN", {
@@ -100,12 +82,12 @@ const MyOrders = () => {
                   })}
                 </td>
 
-                <td className="p-3 border">
-                  <button
-                    onClick={() => handleDeleteOrder(order.order_no)}
-                    className="text-red-600 hover:underline text-xs"
-                  >
-                    Delete
+                <td className="p-2 border">
+                  <button 
+                      onClick={() =>
+                      navigate("/user-order-details", { state: { order_Id: order.orderId, user_id: order.user_id } })
+                    }className="text-xl text-blue-600 hover:text-blue-800">
+                   <FiEye />
                   </button>
                 </td>
               </tr>

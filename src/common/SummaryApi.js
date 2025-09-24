@@ -169,6 +169,10 @@ const SummaryApi = {
     method: "POST",
     url: "/order/update-order-status",
   },
+  shippingLabelCreate:{
+    method: "POST",
+    url: "/order/create-shipping-label"
+  },
     reserveItems : {
         url : '/order/admin/reserve-items',
         method : 'get'
