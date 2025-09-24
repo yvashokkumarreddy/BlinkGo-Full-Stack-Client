@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import UploadCategoryModel from '../components/UploadCategoryModel'
 import Loading from '../components/Loading'
 import NoData from '../components/NoData'
@@ -8,7 +8,7 @@ import EditCategory from '../components/EditCategory'
 import CofirmBox from '../components/CofirmBox'
 import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 
 const CategoryPage = () => {
     const [openUploadCategory,setOpenUploadCategory] = useState(false)
@@ -72,10 +72,47 @@ const CategoryPage = () => {
     }
   return (
     <section className=''>
-        <div className='p-2   bg-white shadow-md flex items-center justify-between'>
-            <h2 className='font-semibold'>Category</h2>
-            <button onClick={()=>setOpenUploadCategory(true)} className='text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded'>Add Category</button>
-        </div>
+        <div className="p-6 bg-gray-50 rounded-xl shadow">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold">Categories</h2>
+    <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Category</button>
+  </div>
+  <input type="text" placeholder="Search categories..." className="w-full mb-4 p-2 border rounded"/>
+  <table className="w-full text-left table-auto">
+    <thead>
+      <tr className="bg-gray-100">
+        <th className="p-2">Thumbnail</th>
+        <th className="p-2">Name</th>
+        <th className="p-2">Status</th>
+        <th className="p-2">Products</th>
+        <th className="p-2">Created</th>
+        <th className="p-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {categoryData.map(category => (
+        <tr key={category.id} className="hover:bg-gray-50">
+          <td className="p-2">
+            <img src={category.image} alt="" className="w-12 h-12 rounded"/>
+          </td>
+          <td className="p-2 font-semibold">{category.name}</td>
+          <td className="p-2">
+            <span className={`px-2 py-1 rounded-full text-white ${category.active ? 'bg-green-500' : 'bg-gray-400'}`}>
+              {category.active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td className="p-2">{category.productCount}</td>
+          <td className="p-2">{category.createdDate}</td>
+          <td className="p-2 flex gap-2">
+            <button className="text-blue-500 hover:underline">Edit</button>
+            <button className="text-red-500 hover:underline">Delete</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
         {
             !categoryData[0] && !loading && (
                 <NoData/>

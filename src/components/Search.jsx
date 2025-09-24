@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { IoSearch } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
@@ -31,11 +31,11 @@ const Search = () => {
     }
 
   return (
-    <div className='w-full  min-w-[300px] lg:min-w-[420px] h-11 lg:h-12 rounded-lg border overflow-hidden flex items-center text-neutral-500 bg-slate-50 group focus-within:border-primary-200 '>
+    <div className='w-full  min-w-[300px] lg:min-w-[420px] h-10 lg:h-10 rounded-lg border overflow-hidden flex items-center text-neutral-500 bg-blue-100 group focus-within:border-primary-200 '>
         <div>
             {
                 (isMobile && isSearchPage ) ? (
-                    <Link to={"/"} className='flex justify-center items-center h-full p-2 m-1 group-focus-within:text-primary-200 bg-white rounded-full shadow-md'>
+                    <Link to={"/"} className='flex justify-center items-center h-full p-2 m-1 group-focus-within:text-primary-200 bg-blue-100 rounded-full shadow-md'>
                         <FaArrowLeft size={20}/>
                     </Link>
                 ) :(
