@@ -14,6 +14,6 @@ const adminOrdersSlice = createSlice({
     }
 })
 
-export const {handleAllOrders  } = adminOrdersSlice.Slice.actions
+export const {handleAllOrders  } = adminOrdersSlice.actions
 
 export default adminOrdersSlice.reducer
