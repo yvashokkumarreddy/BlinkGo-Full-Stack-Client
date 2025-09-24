@@ -26,6 +26,7 @@ import Cancel from "../pages/Cancel";
 import AllOrders from "../pages/AllOrders";
 import DataImportPage from "../pages/DataImportPage";
 import OrderDetails from "../pages/OrderDetailsPage"; // ✅ fixed import name
+import UserOrderDetails from "../pages/UserOrderDetails";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "reset-password", element: <ResetPassword /> },
       { path: "user", element: <UserMenuMobile /> },
       { path: "order-details", element: <OrderDetails /> },
+      { path: "user-order-details", element: <UserOrderDetails /> },
       {
         path: "dashboard",
         element: <Dashboard />,

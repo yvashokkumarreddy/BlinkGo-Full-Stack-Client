@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 import OrderProgress from "../components/OrderProgress";
 import SummaryApi from "../common/SummaryApi";
 import Axios from "../utils/Axios";
-import { FaArrowLeft } from "react-icons/fa";
-import profile from "../assets/profile.png";
 import ConfirmPopup from "../popUps/OrderConfirmPopup";
+import ShippingFormModal from "../popUps/shippinglable";
+import profile from "../assets/profile.png";
+import ShippingLabelModal from "../popUps/ShippingLabelModal";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
@@ -15,9 +17,13 @@ const OrderDetails = () => {
   const count = location.state?.len || 0;
 
   const [orderData, setOrderData] = useState(null);
-  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [openShipping, setOpenShipping] = useState(false);
+
+  const [shippingLabel, setShippingLabel] = useState(null);
+  const [openLabel, setOpenLabel] = useState(false);
 
   // Fetch order details
   useEffect(() => {
@@ -29,6 +35,11 @@ const OrderDetails = () => {
           data: { orderId, userId },
         });
         setOrderData(res.data);
+        // If label exists in order, use it
+        if (res.data?.shippingLabel) {
+          setShippingLabel(res.data.shippingLabel);
+          setOpenLabel(true);
+        }
       } catch (err) {
         console.error("Error fetching order:", err);
         setError("Failed to fetch order details.");
@@ -39,17 +50,38 @@ const OrderDetails = () => {
     if (orderId && userId) fetchOrder();
   }, [orderId, userId]);
 
+  // Fetch shipping label from backend
+  const fetchShippingLabel = async () => {
+    if (!orderId) return;
+    try {
+      const res = await Axios.post("/order/get-label", { orderId });
+      if (res.data?.data) {
+        setShippingLabel(res.data.data);
+        setOpenLabel(true); // Open modal automatically
+      } else {
+        alert("No shipping label found for this order");
+      }
+    } catch (err) {
+      console.error("Error fetching shipping label:", err);
+      alert("Error fetching shipping label details");
+    }
+  };
+
   // Update order status
-  const updateOrderStatus = async (newStatus) => {
+  const updateOrderStatus = async (newStatus, deliveryDate = null) => {
     if (!orderData) return;
     try {
       await Axios({
         ...SummaryApi.updateOrderStatus,
-        data: { orderId: orderData.order.order_Id, status: newStatus },
+        data: {
+          orderId: orderData.order.order_Id,
+          status: newStatus,
+          deliveryDate,
+        },
       });
       setOrderData((prev) => ({
         ...prev,
-        order: { ...prev.order, status: newStatus },
+        order: { ...prev.order, status: newStatus, deliveryDate },
       }));
     } catch (err) {
       console.error("Error updating order status:", err);
@@ -61,6 +93,30 @@ const OrderDetails = () => {
   if (!orderData) return <p className="p-6 text-red-600">No order selected.</p>;
 
   const { order, user, product_details } = orderData;
+
+  // Totals
+  const totals = product_details.reduce(
+    (acc, item) => {
+      const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
+      const discount = item.product?.discount || 0;
+      const quantity = item.quantity || 1;
+      acc.totalWithoutDiscount += price * quantity;
+      acc.totalDiscount += (price * discount) / 100 * quantity;
+      return acc;
+    },
+    { totalWithoutDiscount: 0, totalDiscount: 0 }
+  );
+  const finalTotal = totals.totalWithoutDiscount - totals.totalDiscount;
+
+  // Shipping cost
+  const shippingCost = shippingLabel
+    ? 5 + shippingLabel.weight * 1.5 +
+      (shippingLabel.dimensions?.length *
+        shippingLabel.dimensions?.width *
+        shippingLabel.dimensions?.height) / 5000
+    : 0;
+
+  const grandTotal = (finalTotal + shippingCost).toFixed(2);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -76,7 +132,7 @@ const OrderDetails = () => {
       </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT SIDE */}
+        {/* LEFT COLUMN */}
         <div className="lg:col-span-2 bg-white shadow rounded-xl p-6">
           {/* Order Header */}
           <div className="flex justify-between items-center border-b pb-4 mb-4">
@@ -95,12 +151,15 @@ const OrderDetails = () => {
             Order date: {new Date(order.createdAt).toLocaleString()}
           </p>
 
-          {/* Order Progress */}
           <OrderProgress currentStatus={order.status} />
 
           {/* Action Buttons */}
           <div className="flex justify-between my-4">
-            <button className="underline text-red-500">Cancel Order</button>
+            {order.status === "Pending" && (
+              <button onClick={() => updateOrderStatus("Cancelled")} className="underline text-red-500">
+                Cancel Order
+              </button>
+            )}
             <div className="flex gap-2">
               {order.status === "Pending" && (
                 <button
@@ -112,7 +171,7 @@ const OrderDetails = () => {
               )}
               {order.status === "Confirmed" && (
                 <button
-                  onClick={() => updateOrderStatus("Shipped")}
+                  onClick={() => setOpenShipping(true)}
                   className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
                 >
                   Ship
@@ -137,39 +196,41 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          {/* Product Details */}
-          <h3 className="text-lg font-semibold mb-3">Products</h3>
+          {/* Products */}
+          <div className="flex justify-between px-4 mb-2">
+            <h3 className="text-lg font-semibold">Products</h3>
+            {order.status === "Shipped" && (
+              <button
+                onClick={fetchShippingLabel}
+                className="px-4 h-6 bg-green-700 text-white rounded-md hover:bg-green-800"
+              >
+                Shipping Label
+              </button>
+            )}
+          </div>
+
           <div className="space-y-4">
             {Array.isArray(product_details) &&
               product_details.map((item, idx) => {
-                const price = item.product?.price || 0;
+                const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
                 const discount = item.product?.discount || 0;
                 const quantity = item.quantity || 1;
                 const discountedPrice = price - (price * discount) / 100;
                 const subtotal = discountedPrice * quantity;
 
                 return (
-                  <div
-                    key={item.product?._id || idx}
-                    className="flex justify-between items-center border p-3 rounded-lg"
-                  >
+                  <div key={item.product?._id || idx} className="flex justify-between items-center border p-3 rounded-lg">
                     <div className="flex items-center gap-4">
-                      {item.product?.image?.[0] && (
-                        <img
-                          src={item.product.image[0]}
-                          alt={item.product?.name}
-                          className="w-16 h-16 rounded"
-                        />
+                      {item.product_details?.image?.[0] && (
+                        <img src={item.product_details.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded" />
                       )}
                       <div>
-                        <p className="font-semibold">{item.product?.name}</p>
+                        <p className="font-semibold">{item.product_details?.name}</p>
                         <p className="text-sm text-gray-500">
                           Price: ₹{price} | Discount: {discount}%
                         </p>
                         <p className="text-sm text-gray-500">Qty: {quantity}</p>
-                        <p className="text-sm text-gray-600">
-                          Subtotal: ₹{subtotal.toFixed(2)}
-                        </p>
+                        <p className="text-sm text-gray-600">Subtotal: ₹{subtotal.toFixed(2)}</p>
                       </div>
                     </div>
                   </div>
@@ -177,41 +238,36 @@ const OrderDetails = () => {
               })}
           </div>
 
-          {/* Payment Details */}
-          <div className="flex justify-between px-4 mt-6">
-            <h3 className="text-lg font-semibold mb-3">Payment Details</h3>
-            <button className="px-10 h-7 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-              Invoice
-            </button>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+          {/* Payment + Shipping */}
+          <div className="bg-gray-50 p-6 rounded-lg mt-6 space-y-4 shadow-md">
             <p>
               <span className="font-semibold">Payment Mode:</span> {order.paymentMode}
             </p>
+            <p>
+              <span className="font-semibold">Total (Without Discount):</span> ₹{totals.totalWithoutDiscount.toFixed(2)}
+            </p>
+            <p className="text-red-600">
+              <span className="font-semibold">Discount:</span> -₹{totals.totalDiscount.toFixed(2)}
+            </p>
+            <p className="text-green-600 font-bold">
+              <span className="font-semibold">Subtotal:</span>+₹{finalTotal.toFixed(2)}
+            </p>
+            <p className="text-green-600 font-bold">
+              <span className="font-semibold">Subtotal:</span>+₹{shippingCost.toFixed(2)}
+            </p>
+            {order.deliveryDate && (
+              <p>
+                <span className="font-semibold">Delivery Date:</span> {new Date(order.deliveryDate).toLocaleDateString()}
+              </p>
+            )}
 
-            {Array.isArray(product_details) && product_details.length > 0 && (() => {
-              const totalWithoutDiscount = product_details.reduce(
-                (sum, item) => sum + (item.product?.price || 0) * (item.quantity || 1),
-                0
-              );
-              const totalDiscount = product_details.reduce(
-                (sum, item) =>
-                  sum + ((item.product?.price || 0) * (item.product?.discount || 0)) / 100 * (item.quantity || 1),
-                0
-              );
-              const finalTotal = totalWithoutDiscount - totalDiscount;
-              return (
-                <>
-                  <p><span className="font-semibold">Total (Without Discount):</span> ₹{totalWithoutDiscount.toFixed(2)}</p>
-                  <p className="text-red-600"><span className="font-semibold">Discount:</span> -₹{totalDiscount.toFixed(2)}</p>
-                  <p className="text-green-600 font-bold"><span className="font-semibold">Final Total:</span> ₹{finalTotal.toFixed(2)}</p>
-                </>
-              );
-            })()}
+            <p className="text-lg font-bold">
+              <span className="font-semibold">Grand Total:</span> ₹{grandTotal}
+            </p>
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT COLUMN */}
         <div className="bg-white shadow rounded-xl p-6 space-y-6">
           <div>
             <h3 className="text-lg font-semibold mb-3">Customer</h3>
@@ -252,11 +308,35 @@ const OrderDetails = () => {
         <ConfirmPopup
           order={order}
           user={user}
+          productDetails={product_details}
           onClose={() => setShowConfirmPopup(false)}
-          onConfirm={() => {
-            updateOrderStatus("Confirmed");
+          onConfirm={(deliveryDate) => {
+            updateOrderStatus("Confirmed", deliveryDate);
             setShowConfirmPopup(false);
           }}
+        />
+      )}
+
+      {/* Shipping Modal */}
+      <ShippingFormModal
+        isOpen={openShipping}
+        onClose={() => setOpenShipping(false)}
+        orderId={order.order_Id}
+        product_details={product_details}
+        deliveryDate={order.deliveryDate}
+        onShippingComplete={(label) => setShippingLabel(label)}
+        onConfirm={(deliveryDate) => {
+          updateOrderStatus("Shipped", deliveryDate);
+          setOpenShipping(false);
+        }}
+      />
+
+      {/* Shipping Label Modal */}
+      {shippingLabel && (
+        <ShippingLabelModal
+          isOpen={openLabel}
+          onClose={() => setOpenLabel(false)}
+          label={shippingLabel}
         />
       )}
     </div>
