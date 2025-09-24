@@ -62,7 +62,7 @@ const Header = () => {
     },[cartItem])
 
   return (
-    <header className='h-24 lg:h-20 lg:shadow-md sticky top-0 z-40 flex flex-col justify-center gap-1 bg-white'>
+    <header className='h-18 lg:h-14 lg:shadow-md bg-blue-400 sticky top-0 z-40 flex flex-col justify-center gap-1 '>
         {
             !(isSearchPage && isMobile) && (
                 <div className='container mx-auto flex items-center px-2 justify-between'>

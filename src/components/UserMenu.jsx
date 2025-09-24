@@ -5,10 +5,13 @@ import Divider from './Divider'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import { logout } from '../store/userSlice'
-import toast from 'react-hot-toast'
+// import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
 import { HiOutlineExternalLink } from "react-icons/hi";
+import { IoLocationOutline } from "react-icons/io5";
+import { IoMdLogOut } from "react-icons/io";
 import isAdmin from '../utils/isAdmin'
+import { TbShoppingCartCopy } from "react-icons/tb";
 import axios from 'axios'
 import { useGlobalContext } from '../provider/GlobalProvider'
 
@@ -95,13 +98,13 @@ const UserMenu = ({close}) => {
               )
             }
             {isAdmin(user.role)?(
-            <Link onClick={handleAllorders} to={"/dashboard/orders"} className='px-2 hover:bg-orange-200 py-1'>Orders</Link>
+            <Link onClick={handleAllorders} to={"/dashboard/orders"} className='px-2 hover:bg-orange-200 py-1 text-align-center'><TbShoppingCartCopy /> Orders</Link>
             ):(
-            <Link onClick={handleApiCall} to={"/dashboard/myorders"} className='px-2 hover:bg-orange-200 py-1'>My Orders</Link>
+            <Link onClick={handleApiCall} to={"/dashboard/myorders"} className='px-2 hover:bg-orange-200 py-1'><div className='flex'><TbShoppingCartCopy className='mt-1'/> <p className='ml-2'>My Orders</p></div></Link>
             )}            
-            <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-orange-200 py-1'>Save Address</Link>
+            <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-orange-200 py-1'><div className='flex'><IoLocationOutline className='mt-1'/> <p className='ml-2'>Save Address</p></div></Link>
 
-            <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'>Log Out</button>
+            <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'><div className='flex'><IoMdLogOut  className='mt-1'/> <p className='ml-2'>Log out</p></div></button>
             {
               isAdmin(user.role) && (
                 <Link onClick={handleClose} to={"/dashboard/dataImport"} className='px-2 hover:bg-orange-200 py-1'>Data Import</Link>

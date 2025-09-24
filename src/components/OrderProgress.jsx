@@ -15,7 +15,7 @@ const OrderProgress = ({ currentStatus }) => {
   const currentStepIndex = statusOrder.indexOf(currentStatus);
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg shadow">
+    <div className="w-full p-6 bg-blue-300 rounded-lg shadow">
       {/* Progress Line */}
       <div className="relative flex items-center justify-between mb-8">
         {steps.map((step, index) => (
