@@ -55,8 +55,9 @@ const OrderDetails = () => {
     if (!orderId) return;
     try {
       const res = await Axios.post("/order/get-label", { orderId });
+      console.log("response",res.data)
       if (res.data?.data) {
-        setShippingLabel(res.data.data);
+        setShippingLabel(res.data);
         setOpenLabel(true); // Open modal automatically
       } else {
         alert("No shipping label found for this order");
@@ -93,7 +94,7 @@ const OrderDetails = () => {
   if (!orderData) return <p className="p-6 text-red-600">No order selected.</p>;
 
   const { order, user, product_details } = orderData;
-
+console.log("orderData",shippingLabel)
   // Totals
   const totals = product_details.reduce(
     (acc, item) => {
@@ -109,11 +110,11 @@ const OrderDetails = () => {
   const finalTotal = totals.totalWithoutDiscount - totals.totalDiscount;
 
   // Shipping cost
-  const shippingCost = shippingLabel
-    ? 5 + shippingLabel.weight * 1.5 +
-      (shippingLabel.dimensions?.length *
-        shippingLabel.dimensions?.width *
-        shippingLabel.dimensions?.height) / 5000
+  const shippingCost = shippingLabel.data
+    ? 5 + shippingLabel.data.weight * 1.5 +
+      (shippingLabel.data.dimensions?.length *
+        shippingLabel.data.dimensions?.width *
+        shippingLabel.data.dimensions?.height) / 5000
     : 0;
 
   const grandTotal = (finalTotal + shippingCost).toFixed(2);
@@ -212,6 +213,7 @@ const OrderDetails = () => {
           <div className="space-y-4">
             {Array.isArray(product_details) &&
               product_details.map((item, idx) => {
+                console.log("item", item)
                 const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
                 const discount = item.product?.discount || 0;
                 const quantity = item.quantity || 1;
@@ -221,11 +223,11 @@ const OrderDetails = () => {
                 return (
                   <div key={item.product?._id || idx} className="flex justify-between items-center border p-3 rounded-lg">
                     <div className="flex items-center gap-4">
-                      {item.product_details?.image?.[0] && (
-                        <img src={item.product_details.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded" />
+                      {item.product?.image?.[0] && (
+                        <img src={item.product.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded" />
                       )}
                       <div>
-                        <p className="font-semibold">{item.product_details?.name}</p>
+                        <p className="font-semibold">{item.product?.name}</p>
                         <p className="text-sm text-gray-500">
                           Price: ₹{price} | Discount: {discount}%
                         </p>
@@ -253,7 +255,7 @@ const OrderDetails = () => {
               <span className="font-semibold">Subtotal:</span>+₹{finalTotal.toFixed(2)}
             </p>
             <p className="text-green-600 font-bold">
-              <span className="font-semibold">Subtotal:</span>+₹{shippingCost.toFixed(2)}
+              <span className="font-semibold">Shipping Charges:</span>+₹{shippingCost.toFixed(2)}
             </p>
             {order.deliveryDate && (
               <p>
@@ -337,6 +339,8 @@ const OrderDetails = () => {
           isOpen={openLabel}
           onClose={() => setOpenLabel(false)}
           label={shippingLabel}
+          // OrderDetails={shippingLabel}
+          product_details={product_details}
         />
       )}
     </div>
