@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useEffect } from 'react';
 import fetchUserDetails from './utils/fetchUserDetails';
 import { setUserDetails } from './store/userSlice';
@@ -37,7 +37,7 @@ function App() {
            dispatch(setAllCategory(responseData.data.sort((a, b) => a.name.localeCompare(b.name)))) 
         }
     } catch (error) {
-        
+        console.log(error)
     }finally{
       dispatch(setLoadingCategory(false))
     }
@@ -54,8 +54,9 @@ function App() {
            dispatch(setAllSubCategory(responseData.data.sort((a, b) => a.name.localeCompare(b.name)))) 
         }
     } catch (error) {
-        
+        console.log(error)
     }finally{
+      console.log("OK final")
     }
   }
 
@@ -71,7 +72,7 @@ function App() {
   return (
     <GlobalProvider> 
       <Header/>
-      <main className='min-h-[78vh]'>
+      <main className='min-h-[78vh] bg-blue-200'>
           <Outlet/>
       </main>
       <Footer/>

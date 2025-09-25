@@ -3,12 +3,13 @@ import JsBarcode from "jsbarcode";
 import { QRCodeCanvas } from "qrcode.react";
 import logo from "../assets/Binkeyit.png"
 
-const ShippingLabelModal = ({ isOpen, onClose, label }) => {
+const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
   const printRef = useRef();
   const barcodeRef = useRef();
-
+  const labels = label.data
+  const order_details= label.order_details.orderItems
   useEffect(() => {
-    if (label && barcodeRef.current) {
+    if (labels && barcodeRef.current) {
       JsBarcode(barcodeRef.current, label.trackingNumber || "N/A", {
         format: "CODE128",
         displayValue: true,
@@ -17,8 +18,30 @@ const ShippingLabelModal = ({ isOpen, onClose, label }) => {
         height: 50,
       });
     }
-  }, [label]);
+  }, [labels]);
+  // Totals
+  const totals = product_details.reduce(
+    (acc, item) => {
+      const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
+      const discount = item.product?.discount || 0;
+      const quantity = item.quantity || 1;
+      acc.totalWithoutDiscount += price * quantity;
+      acc.totalDiscount += (price * discount) / 100 * quantity;
+      return acc;
+    },
+    { totalWithoutDiscount: 0, totalDiscount: 0 }
+  );
+  const finalTotal = totals.totalWithoutDiscount - totals.totalDiscount;
 
+  // Shipping cost
+  const shippingCost = labels
+    ? 5 + labels.weight * 1.5 +
+      (labels.dimensions?.length *
+        labels.dimensions?.width *
+        labels.dimensions?.height) / 5000
+    : 0;
+
+  const grandTotal = (finalTotal + shippingCost).toFixed(2);
   const handlePrint = () => {
     const printContent = printRef.current.innerHTML;
     const WinPrint = window.open("", "", "width=1000,height=1200");
@@ -47,8 +70,8 @@ const ShippingLabelModal = ({ isOpen, onClose, label }) => {
     WinPrint.close();
   };
 
-  if (!isOpen || !label) return null;
-
+  if (!isOpen || !labels) return null;
+  console.log("label data",order_details.product_details)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start z-50 overflow-y-auto pt-10">
       <div className="bg-white shadow-lg relative rounded w-11/12 max-w-4xl p-4">
@@ -66,17 +89,17 @@ const ShippingLabelModal = ({ isOpen, onClose, label }) => {
             {/* Order Info Row */}
             <tr className="text-sm leading-tight">
             <th className="border border-black px-2 py-1.5 text-left bg-gray-200">Order ID</th>
-            <td className="border border-black px-2 py-1.5">{label.orderId}</td>
+            <td className="border border-black px-2 py-1.5">{labels.orderId}</td>
 
             <th className="border border-black px-2 py-1 text-left bg-gray-200">Shipping_Id</th>
-            <td className="border border-black px-2 py-1">{label.shippingId}</td>
+            <td className="border border-black px-2 py-1">{labels.shippingId}</td>
 
             <th className="border border-black px-2 py-1 text-left bg-gray-200">Tracking#</th>
-            <td className="border border-black px-2 py-1">{label.trackingNumber}</td>
+            <td className="border border-black px-2 py-1">{labels.trackingNumber}</td>
 
             <th className="border border-black px-2 py-1 text-left bg-gray-200">Shipping_Dt</th>
             <td className="border border-black px-2 py-1">
-                {label.shippingDate ? new Date(label.shippingDate).toLocaleDateString() : "-"}
+                {labels.shippingDate ? new Date(labels.shippingDate).toLocaleDateString() : "-"}
             </td>
             </tr>
 
@@ -86,19 +109,19 @@ const ShippingLabelModal = ({ isOpen, onClose, label }) => {
                 Products
             </th>
             </tr>
-            {Array.isArray(label.product) &&
-            label.product.map((p, idx) => (
+            {Array.isArray(order_details) &&
+            order_details.map((p, idx) => (
                 <tr key={idx} className="text-xs leading-tight">
                 <td className="border border-black px-2 py-1 font-medium" colSpan={3}>
                     {p.product_details?.name || "Unnamed Product"}
                 </td>
                 <td className="border border-black px-2 py-1">Qty: {p.quantity}</td>
-                <td className="border border-black px-2 py-1">₹{p.priceAtPurchase}</td>
+                <td className="border border-black px-2 py-2">₹{p.priceAtPurchase}</td>
                 <td className="border border-black px-2 py-1">₹{p.priceWithOutDiscount}</td>
                 <td className="border border-black px-2 py-1" colSpan={2}>
                     <img
-                    src={p.product_details?.image?.[0]}
-                    alt={p.product_details?.name}
+                    src={p.product_details?.image[0]}
+                    alt={p.product_details.name}
                     className="h-10 w-10 object-cover rounded"
                     />
                 </td>
@@ -113,36 +136,40 @@ const ShippingLabelModal = ({ isOpen, onClose, label }) => {
                 <tbody>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Service Type</th>
-                    <td className="border border-black p-1">{label.serviceType}</td>
+                    <td className="border border-black p-1">{labels.serviceType}</td>
                     </tr>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Carrier</th>
-                    <td className="border border-black p-1">{label.carrierService}</td>
+                    <td className="border border-black p-1">{labels.carrierService}</td>
                     </tr>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Package</th>
                     <td className="border border-black p-1">
-                        {label.packageName} ({label.packageType})
+                        {labels.packageName} ({labels.packageType})
                     </td>
                     </tr>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Weight</th>
-                    <td className="border border-black p-1">{label.weight} kg</td>
+                    <td className="border border-black p-1">{labels.weight} kg</td>
                     </tr>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Dimensions</th>
                     <td className="border border-black p-1">
-                        {label.dimensions?.length} x {label.dimensions?.width} x {label.dimensions?.height} cm
+                        {labels.dimensions?.length} x {labels.dimensions?.width} x {labels.dimensions?.height} cm
                     </td>
                     </tr>
                     <tr>
+                    <th className="border border-black p-1 text-left bg-gray-200">Shipping Charges</th>
+                    <td className="border border-black p-1">₹{shippingCost}</td>
+                    </tr>
+                    <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Total</th>
-                    <td className="border border-black p-1">₹{label.total}</td>
+                    <td className="border border-black p-1">₹{grandTotal}</td>
                     </tr>
                     <tr>
                     <th className="border border-black p-1 text-left bg-gray-200">Delivery Date</th>
                     <td className="border border-black p-1">
-                        {label.shippingDate ? new Date(label.shippingDate).toLocaleDateString() : "-"}
+                        {labels.shippingDate ? new Date(labels.shippingDate).toLocaleDateString() : "-"}
                     </td>
                     </tr>
                 </tbody>
