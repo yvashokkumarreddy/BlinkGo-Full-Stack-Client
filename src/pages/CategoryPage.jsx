@@ -72,13 +72,13 @@ const CategoryPage = () => {
     }
   return (
     <section className=''>
-        <div className="p-6 bg-gray-50 rounded-xl shadow">
+        <div className="p-2 bg-gray-50 rounded-xl shadow">
   <div className="flex justify-between items-center mb-4">
     <h2 className="text-xl font-bold">Categories</h2>
     <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Category</button>
   </div>
-  <input type="text" placeholder="Search categories..." className="w-full mb-4 p-2 border rounded"/>
-  <table className="w-full text-left table-auto">
+  {/* <input type="text" placeholder="Search categories..." className="w-full mb-4 p-2 border rounded"/> */}
+  {/* <table className="w-full text-left table-auto">
     <thead>
       <tr className="bg-gray-100">
         <th className="p-2">Thumbnail</th>
@@ -110,7 +110,7 @@ const CategoryPage = () => {
         </tr>
       ))}
     </tbody>
-  </table>
+  </table> */}
 </div>
 
         {
@@ -119,17 +119,17 @@ const CategoryPage = () => {
             )
         }
 
-        <div className='p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2'>
+        <div className='p-2 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2'>
             {
                 categoryData.map((category,index)=>{
                     return(
-                        <div className='w-32 h-56 rounded shadow-md' key={category.categoryId}>
+                        <div className='w-30 h-54 rounded shadow-md' key={category.categoryId}>
                             <img 
                                 alt={category.name}
                                 src={category.image}
                                 className='w-full object-scale-down'
                             />
-                            <div className='items-center h-9 flex gap-2'>
+                            <div className='items-center h-9 flex gap-2 bg-white p-2 pb-2'>
                                 <button onClick={()=>{
                                     setOpenEdit(true)
                                     setEditData(category)

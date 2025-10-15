@@ -46,41 +46,59 @@ const Address = () => {
         </button>
       </div>
       <div className='bg-blue-50 p-2 grid gap-4'>
-        {
-          addressList.map((address) => {
-            return (
-              <div
-                key={address.address_id}
-                className={`border rounded p-3 flex gap-3 bg-white ${!address.status && 'hidden'}`}
-              >
-                <div className='w-full'>
-                  <p>{address.address_line}</p>
-                  <p>{address.city}</p>
-                  <p>{address.state}</p>
-                  <p>{address.country} - {address.pincode}</p>
-                  <p>{address.mobile}</p>
-                </div>
-                <div className=' grid gap-10'>
-                  <button onClick={() => {
-                    setOpenEdit(true)
-                    setEditData(address)
-                  }} className='bg-green-200 p-1 rounded  hover:text-white hover:bg-green-600'>
-                    <MdEdit />
-                  </button>
-                  <button onClick={() =>
-                    handleDisableAddress(address.address_id)
-                  } className='bg-red-200 p-1 rounded hover:text-white hover:bg-red-600'>
-                    <MdDelete size={20} />
-                  </button>
-                </div>
-              </div>
-            )
-          })
-        }
-        <div onClick={() => setOpenAddress(true)} className='h-16 bg-blue-50 border-2 border-dashed flex justify-center items-center cursor-pointer'>
-          Add address
+  {addressList.map((address) => (
+    <div
+      key={address.address_id}
+      className={`border rounded-lg p-4 bg-white shadow-sm hover:shadow-lg transition-all ${!address.status && 'hidden'}`}
+    >
+      {/* Top Row with Name / Address Type */}
+      <div className="flex justify-between items-center mb-3">
+        <span className="text-sm font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">
+          {address.type || "Address"}
+        </span>
+
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setOpenEdit(true); setEditData(address); }}
+            className='p-1 hover:text-green-600'
+          >
+            <MdEdit size={18} />
+          </button>
+          <button
+            onClick={() => handleDisableAddress(address.address_id)}
+            className='p-1 hover:text-red-600'
+          >
+            <MdDelete size={18} />
+          </button>
         </div>
       </div>
+
+      {/* Labeled Content */}
+      <div className="text-sm text-gray-700 leading-6">
+        <p><span className="font-semibold">Address:</span> {address.address_line}</p>
+        <p><span className="font-semibold">City:</span> {address.city}</p>
+        <p><span className="font-semibold">State:</span> {address.state}</p>
+        <p><span className="font-semibold">Country:</span> {address.country}</p>
+        <p><span className="font-semibold">Pincode:</span> {address.pincode}</p>
+      </div>
+
+      {/* Footer */}
+      <p className='text-sm text-gray-500 mt-2'>
+        <span className="font-semibold text-gray-600">Mobile:</span> 📞 {address.mobile}
+      </p>
+    </div>
+  ))}
+
+  {/* Add Address */}
+  <div
+    onClick={() => setOpenAddress(true)}
+    className='h-16 bg-white border-2 border-dashed flex justify-center items-center cursor-pointer rounded hover:bg-gray-100 transition'
+  >
+    ➕ Add Address
+  </div>
+</div>
+
+
 
       {
         openAddress && (

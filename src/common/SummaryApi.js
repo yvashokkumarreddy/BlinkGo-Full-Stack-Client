@@ -150,7 +150,7 @@ const SummaryApi = {
         method : 'post'
     },
     payment_url : {
-        url : "/order/checkout",
+        url : '/payments/create-order',
         method : 'post'
     },
     getOrderItems : {
@@ -167,7 +167,7 @@ const SummaryApi = {
     },
     updateOrderStatus: {
     method: "POST",
-    url: "/order/update-order-status",
+    url: "/order/update-status",
   },
   shippingLabelCreate:{
     method: "POST",

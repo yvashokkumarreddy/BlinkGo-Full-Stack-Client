@@ -6,6 +6,7 @@ import Loading from '../components/Loading'
 import ProductCardAdmin from '../components/ProductCardAdmin'
 import { IoSearchOutline } from "react-icons/io5";
 import EditProductAdmin from '../components/EditProductAdmin'
+import { useLocation } from 'react-router-dom'
 
 const ProductAdmin = () => {
   const [productData,setProductData] = useState([])
@@ -13,18 +14,16 @@ const ProductAdmin = () => {
   const [loading,setLoading] = useState(false)
   const [totalPageCount,setTotalPageCount] = useState(1)
   const [search,setSearch] = useState("")
-
-  const fetchProductData = async()=>{
+  const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
+  const searchText = location.search.slice(3)
+  const fetchProductData = async(pageNum = 1)=>{
     try {
         setLoading(true)
         const response = await Axios({
-           ...SummaryApi.getProduct,
-           data : {
-              page : page,
-              limit : 12,
-              search : search 
-           }
-        })
+        ...SummaryApi.searchProduct,
+        data: { search: search, page: pageNum },
+      });
 
         const { data : responseData } = response 
 
@@ -40,6 +39,10 @@ const ProductAdmin = () => {
     }
   }
 
+   useEffect(() => {
+      setPage(1);
+      fetchProductData(1);
+    }, [searchText]);
   useEffect(()=>{
     fetchProductData()
   },[page])
@@ -57,6 +60,7 @@ const ProductAdmin = () => {
 
   const handleOnChange = (e)=>{
     const { value } = e.target
+    console.log("vaukessssss", value)
     setSearch(value)
     setPage(1)
   }

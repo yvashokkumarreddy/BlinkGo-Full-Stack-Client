@@ -28,7 +28,7 @@ const ReserveItemModal = ({ isOpen, onClose, products, onSubmit }) => {
             ><div className="flex-col">
               <span>{item.product_details.name}</span>
               <p className="text-sm text-gray-500">Qty: {item.quantity}</p></div>
-              <span className="text-gray-500">{item.available} available</span>
+              <span className="text-gray-500">{item.stock} available</span>
             </div>
             
           ))}

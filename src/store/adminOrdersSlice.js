@@ -1,19 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialValue = {
-    ordersList : []
-}
+const initialState = {
+  ordersList: [] // ✅ always an array
+};
 
 const adminOrdersSlice = createSlice({
-    name : 'AdminOrders',
-    initialState : initialValue,
-    reducers : {
-        handleAllOrders : (state,action)=>{
-            state.ordersList = [...action.payload]
-        }
+  name: "AdminOrders",
+  initialState,
+  reducers: {
+    handleAllOrders: (state, action) => {
+      // ✅ Defensive check
+      state.ordersList = Array.isArray(action.payload)
+        ? action.payload
+        : [];
+    },
+    clearAllOrders: (state) => {
+      state.ordersList = [];
     }
-})
+  }
+});
 
-export const {handleAllOrders  } = adminOrdersSlice.actions
+// export const {handleAllOrders  } = adminOrdersSlice.actions
 
-export default adminOrdersSlice.reducer
+// export default adminOrdersSlice.reducer
+export const { handleAllOrders, clearAllOrders } = adminOrdersSlice.actions;
+
+export default adminOrdersSlice.reducer;

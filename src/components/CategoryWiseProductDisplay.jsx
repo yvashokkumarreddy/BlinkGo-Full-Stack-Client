@@ -55,21 +55,21 @@ const CategoryWiseProductDisplay = ({ categoryId, name }) => {
 
   const handleRedirectProductListpage = ()=>{
       const subcategory = subCategoryData.find(sub =>{
-        const filterData = sub.category.some(c => {
-          return c.categoryId == categoryId
-        })
-        // console.log(filterData,"5467890-mnhgf2e12   !@")
-        return filterData ? true : null
+        console.log("subbbbbb",sub)
+    
+          return sub.categoryId == categoryId
+        // console.log(categoryId,"5467890-mnhgf2e12   !@")
+        // return filterData ? true : null
       })
       const url = `/${valideURLConvert(name)}-${categoryId}/${valideURLConvert(subcategory?.name)}-${subcategory?.subCategoryId}`
-
+      console.log("urlllll",url)
       return url
   }
 
   const redirectURL =  handleRedirectProductListpage()
     return (
         <div>
-            <div className='container mx-auto p-4 flex items-center justify-between gap-4'>
+            <div className='container mx-auto p-4 flex items-center justify-between gap-4 rounded'>
                 <h3 className='font-semibold text-lg md:text-xl'>{name}</h3>
                 <Link  to={redirectURL} className='text-green-600 hover:text-green-400'>See All</Link>
             </div>

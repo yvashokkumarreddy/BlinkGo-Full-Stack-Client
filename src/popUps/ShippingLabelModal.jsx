@@ -8,6 +8,7 @@ const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
   const barcodeRef = useRef();
   const labels = label.data
   const order_details= label.order_details.orderItems
+  console.log("eroj89898uuu",product_details)
   useEffect(() => {
     if (labels && barcodeRef.current) {
       JsBarcode(barcodeRef.current, label.trackingNumber || "N/A", {
@@ -22,6 +23,7 @@ const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
   // Totals
   const totals = product_details.reduce(
     (acc, item) => {
+      console.log("itemmssss",item)
       const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
       const discount = item.product?.discount || 0;
       const quantity = item.quantity || 1;
@@ -71,7 +73,7 @@ const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
   };
 
   if (!isOpen || !labels) return null;
-  console.log("label data",order_details.product_details)
+  console.log("label data",labels)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start z-50 overflow-y-auto pt-10">
       <div className="bg-white shadow-lg relative rounded w-11/12 max-w-4xl p-4">
@@ -109,15 +111,15 @@ const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
                 Products
             </th>
             </tr>
-            {Array.isArray(order_details) &&
+            {/* {
             order_details.map((p, idx) => (
                 <tr key={idx} className="text-xs leading-tight">
-                <td className="border border-black px-2 py-1 font-medium" colSpan={3}>
-                    {p.product_details?.name || "Unnamed Product"}
+                <td className="border border-black px-2 py-2 font-medium" colSpan={3}>
+                    {p?.name || "Unnamed Product"}
                 </td>
                 <td className="border border-black px-2 py-1">Qty: {p.quantity}</td>
                 <td className="border border-black px-2 py-2">₹{p.priceAtPurchase}</td>
-                <td className="border border-black px-2 py-1">₹{p.priceWithOutDiscount}</td>
+                <td className="border border-black px-2 py-1">₹{p.totalAmount}</td>
                 <td className="border border-black px-2 py-1" colSpan={2}>
                     <img
                     src={p.product_details?.image[0]}
@@ -126,10 +128,10 @@ const ShippingLabelModal = ({ isOpen, onClose, label, product_details }) => {
                     />
                 </td>
                 </tr>
-            ))}
+            ))} */}
 
             {/* Shipping Details + Barcode/Logo */}
-            <tr>
+            <tr>loading
             {/* Left Column */}
             <td colSpan={4} className="border border-black align-top p-0 w-1/2">
                 <table className="w-full border-collapse">
