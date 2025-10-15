@@ -73,7 +73,7 @@ const SubCategoryPage = () => {
     columnHelper.accessor("categoryId", {
       header: "Category ID",
       cell: ({ row }) => (
-        <p className="shadow-md px-1 inline-block">{row.original.categoryId}</p>
+        <p className="shadow-md px-1  inline-block">{row.original.categoryId}</p>
       )
     }),
     columnHelper.accessor("subCategoryId", {

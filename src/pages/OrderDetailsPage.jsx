@@ -34,10 +34,11 @@ const OrderDetails = () => {
           ...SummaryApi.getOrderById,
           data: { orderId, userId },
         });
+        console.log("shipping label", res)
         setOrderData(res.data);
         // If label exists in order, use it
-        if (res.data?.shippingLabel) {
-          setShippingLabel(res.data.shippingLabel);
+        if (res.data?.shippingLabelDetails) {
+          setShippingLabel(res.data);
           setOpenLabel(true);
         }
       } catch (err) {
@@ -89,12 +90,25 @@ const OrderDetails = () => {
     }
   };
 
-  if (loading) return <p className="p-6">Loading order details...</p>;
+  // if (loading) return <p className="p-6">Loading order details...</p>;
+ if (loading) return (
+  <div className="fixed inset-0 flex justify-center items-center bg-white/50 backdrop-blur-sm z-50">
+    <div className="flex space-x-2">
+      <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
+      <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+      <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+    </div>
+  </div>
+);
+
+
+
+
   if (error) return <p className="p-6 text-red-600">{error}</p>;
   if (!orderData) return <p className="p-6 text-red-600">No order selected.</p>;
 
   const { order, user, product_details } = orderData;
-console.log("orderData",shippingLabel)
+// console.log("orderData",shippingLabel)
   // Totals
   const totals = product_details.reduce(
     (acc, item) => {
@@ -110,17 +124,18 @@ console.log("orderData",shippingLabel)
   const finalTotal = totals.totalWithoutDiscount - totals.totalDiscount;
 
   // Shipping cost
-  const shippingCost = shippingLabel.data
-    ? 5 + shippingLabel.data.weight * 1.5 +
-      (shippingLabel.data.dimensions?.length *
-        shippingLabel.data.dimensions?.width *
-        shippingLabel.data.dimensions?.height) / 5000
+  console.log("shipping labe7777l",shippingLabel)
+  const shippingCost = shippingLabel
+    ? 5 + shippingLabel.weight * 1.5 +
+      (shippingLabel.dimensions?.length *
+        shippingLabel.dimensions?.width *
+        shippingLabel.dimensions?.height) / 5000
     : 0;
-
+console.log("shippingLabel",shippingLabel)
   const grandTotal = (finalTotal + shippingCost).toFixed(2);
-
+        // console.log("after grand")
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-blue-100 min-h-screen">
       {/* Header */}
       <div className="flex justify-between px-5 mb-6">
         <button
@@ -134,7 +149,7 @@ console.log("orderData",shippingLabel)
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT COLUMN */}
-        <div className="lg:col-span-2 bg-white shadow rounded-xl p-6">
+        <div className="lg:col-span-2 bg-blue-200 shadow rounded-xl p-6">
           {/* Order Header */}
           <div className="flex justify-between items-center border-b pb-4 mb-4">
             <h2 className="text-2xl font-bold">Order {order.order_Id}</h2>
@@ -147,11 +162,16 @@ console.log("orderData",shippingLabel)
               </span>
             </div>
           </div>
-
+          <div className="flex justify-between">
           <p className="text-gray-500 mb-6">
             Order date: {new Date(order.createdAt).toLocaleString()}
           </p>
-
+          {shippingLabel && (
+              <p>
+                <span className="font-semibold">Delivery Date:</span> {new Date(shippingLabel.deiverydate).toLocaleDateString()}
+              </p>
+            )}
+            </div>
           <OrderProgress currentStatus={order.status} />
 
           {/* Action Buttons */}
@@ -198,7 +218,7 @@ console.log("orderData",shippingLabel)
           </div>
 
           {/* Products */}
-          <div className="flex justify-between px-4 mb-2">
+          <div className="flex justify-between bg-blue-200 px-4 mb-2">
             <h3 className="text-lg font-semibold">Products</h3>
             {order.status === "Shipped" && (
               <button
@@ -210,7 +230,7 @@ console.log("orderData",shippingLabel)
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2 bg-blue-300 rounded-xl">
             {Array.isArray(product_details) &&
               product_details.map((item, idx) => {
                 console.log("item", item)
@@ -221,7 +241,7 @@ console.log("orderData",shippingLabel)
                 const subtotal = discountedPrice * quantity;
 
                 return (
-                  <div key={item.product?._id || idx} className="flex justify-between items-center border p-3 rounded-lg">
+                  <div key={item.product?._id || idx} className="flex justify-between items-center border p-3 rounded-xl">
                     <div className="flex items-center gap-4">
                       {item.product?.image?.[0] && (
                         <img src={item.product.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded" />
@@ -241,7 +261,7 @@ console.log("orderData",shippingLabel)
           </div>
 
           {/* Payment + Shipping */}
-          <div className="bg-gray-50 p-6 rounded-lg mt-6 space-y-4 shadow-md">
+          <div className="bg-blue-300 p-6 rounded-lg mt-6 space-y-4 shadow-md">
             <p>
               <span className="font-semibold">Payment Mode:</span> {order.paymentMode}
             </p>
@@ -257,11 +277,7 @@ console.log("orderData",shippingLabel)
             <p className="text-green-600 font-bold">
               <span className="font-semibold">Shipping Charges:</span>+₹{shippingCost.toFixed(2)}
             </p>
-            {order.deliveryDate && (
-              <p>
-                <span className="font-semibold">Delivery Date:</span> {new Date(order.deliveryDate).toLocaleDateString()}
-              </p>
-            )}
+            
 
             <p className="text-lg font-bold">
               <span className="font-semibold">Grand Total:</span> ₹{grandTotal}
@@ -270,7 +286,7 @@ console.log("orderData",shippingLabel)
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="bg-white shadow rounded-xl p-6 space-y-6">
+        <div className="bg-blue-200 shadow rounded-xl p-6 space-y-6">
           <div>
             <h3 className="text-lg font-semibold mb-3">Customer</h3>
             <img src={profile} className="rounded-m" alt="profile" />
@@ -303,6 +319,7 @@ console.log("orderData",shippingLabel)
             </div>
           </div>
         </div>
+        
       </div>
 
       {/* Confirm Popup */}
@@ -334,6 +351,7 @@ console.log("orderData",shippingLabel)
       />
 
       {/* Shipping Label Modal */}
+      
       {shippingLabel && (
         <ShippingLabelModal
           isOpen={openLabel}
@@ -345,6 +363,7 @@ console.log("orderData",shippingLabel)
       )}
     </div>
   );
+  
 };
 
 export default OrderDetails;

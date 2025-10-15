@@ -76,7 +76,7 @@ export default function AllOrdersPage() {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order.order_Id} className="hover:bg-gray-50">
+              <tr key={order.order_Id} className="hover:bg-blue-200">
                 <td className="p-3 border font-small">{order.order_Id}</td>
                 <td className="p-3 border">
                   {usersMap[order.user_id] || "Unknown User"} <br />

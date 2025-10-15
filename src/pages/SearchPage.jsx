@@ -68,10 +68,7 @@ const SearchPage = () => {
   };
 
   // Reset data when search changes
-  useEffect(() => {
-    setPage(1);
-    fetchData(1);
-  }, [searchText]);
+ 
 
   // Fetch data when page changes
   useEffect(() => {
