@@ -1,11 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: './',
   build: {
-    outDir: "dist"
+    outDir: "dist",
+    target: "esnext", 
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    },
+    commonjsOptions: {
+      include: [/node_modules/]
+    }
   },
-  base: "/"
+  optimizeDeps: {
+    force: true, 
+  },
+  resolve: {
+    dedupe: ['react', 'react-dom'], 
+  }
 })
