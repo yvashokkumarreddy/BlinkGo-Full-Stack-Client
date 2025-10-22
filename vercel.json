@@ -1,13 +1,15 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "build": {
-    "env": {
-      "NODE_VERSION": "22",
-      "NPM_FLAGS": "--include=dev"
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
-  },
-  "ignoreCommand": "echo 'No ignore rules'",
-  "installCommand": "npm install --force"
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "NODE_VERSION": "20"
+  }
 }
