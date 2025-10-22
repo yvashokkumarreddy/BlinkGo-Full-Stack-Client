@@ -1,8 +1,13 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
   "build": {
     "env": {
-      "NODE_VERSION": "20",
+      "NODE_VERSION": "22",
       "NPM_FLAGS": "--include=dev"
     }
-  }
+  },
+  "ignoreCommand": "echo 'No ignore rules'",
+  "installCommand": "npm install --force"
 }
