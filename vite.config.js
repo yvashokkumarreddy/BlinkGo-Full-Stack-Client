@@ -1,36 +1,24 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // ✅ works for static hosting (GitHub Pages, etc.)
+  base: './', // required for static deployment
   build: {
-    outDir: "dist",
-    target: "esnext",
-    minify: "esbuild",
-    chunkSizeWarningLimit: 1000, // ✅ prevent chunk size warnings
+    outDir: 'dist',
+    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          // ✅ Automatically split vendor libraries for faster loading
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react-vendor'
-            if (id.includes('axios')) return 'axios-vendor'
-            if (id.includes('react-router')) return 'router-vendor'
-            return 'vendor'
-          }
-        }
-      }
+        manualChunks: undefined,
+      },
     },
     commonjsOptions: {
       include: [/node_modules/],
-      transformMixedEsModules: true
-    }
-  },
-  optimizeDeps: {
-    force: true, // ✅ ensures re-optimization if deps change
+      transformMixedEsModules: true,
+    },
   },
   resolve: {
-    dedupe: ['react', 'react-dom'], // ✅ prevents duplicate React instances
-  }
-})
+    dedupe: ['react', 'react-dom'],
+  },
+});
