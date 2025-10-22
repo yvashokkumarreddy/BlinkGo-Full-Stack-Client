@@ -1,0 +1,11 @@
+diff --git a/dist/native.js b/dist/native.js
+index 1234567..abcdef0 100644
+--- a/dist/native.js
++++ b/dist/native.js
+@@ -1,6 +1,8 @@
+ try {
+   module.exports = require('./native-node.js');
+ } catch (e) {
++  // Fix for environments where native module fails to load (like Vercel / Node 22)
++  module.exports = require('./rollup.js');
+ }
