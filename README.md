@@ -37,35 +37,63 @@ Notifications using toast messages
 Responsive UI optimized for mobile and desktop
 
 Project Structure
+
 src/
+
 ├── assets/        # Images, icons, logos, and static files
+
 ├── common/        # Reusable utilities, constants, and helper functions
+
 ├── components/    # Shared UI components (buttons, cards, modals, etc.)
+
 ├── hooks/         # Custom React hooks
+
 ├── layouts/       # Layout components (headers, footers, sidebars)
+
 ├── pages/         # Page components for routes (Home, Login, Dashboard, etc.)
+
 ├── popUps/        # Modal and popup components
+
 ├── provider/      # Context Providers (e.g., AuthContext, ThemeContext)
+
 ├── route/         # Route definitions and protected route components
+
 ├── store/         # Redux store setup and slices
+
 ├── utils/         # Helper functions and utilities
+
 ├── App.css        # Global styles for the App component
+
 ├── App.jsx        # Root React component
+
 ├── index.css      # Global CSS (Tailwind imports, fonts)
+
 └── main.jsx       # App entry point (ReactDOM.render / createRoot)
 
 # Root folder files
+
 ├── .env             # Environment variables
+
 ├── .gitignore       # Git ignore rules
+
 ├── README.md        # Project documentation
+
 ├── eslint.config.js # ESLint configuration
+
 ├── index.html       # Main HTML template
+
 ├── package.json     # Project dependencies and scripts
+
 ├── package-lock.json
+
 ├── postcss.config.js
+
 ├── tailwind.config.js
+
 ├── vercel.json      # Vercel deployment configuration
+
 └── vite.config.js   # Vite build and development configuration
+
 
 Tech Stack
 
@@ -90,6 +118,7 @@ Setup and Installation
 Clone the repository
 
 git clone https://github.com/<your-username>/GroZaar-Full-Stack-Client.git
+
 cd GroZaar-Full-Stack-Client/client
 
 
