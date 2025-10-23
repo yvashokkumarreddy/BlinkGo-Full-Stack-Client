@@ -132,7 +132,7 @@ const ShippingFormModal = ({
   };
 
   if (!isOpen) return null;
-
+  // console.log("product details", product_details)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-end z-50">
       <div className="bg-white w-1/2 h-full shadow-lg p-6 overflow-y-auto relative">
@@ -153,10 +153,12 @@ const ShippingFormModal = ({
             <p className="text-sm mb-2 font-semibold">Products:</p>
             <div className="space-y-2 mb-4">
               {product_details.map((item, idx) => (
-                <div key={idx} className="text-sm border rounded p-2">
+                <div key={idx} className="text-sm border rounded p-2 flex justify-between">
+                <div>
                   <p>{item.product?.name}</p>
                   <p>Price: ₹{item.product?.price}</p>
-                  <p>Qty: {item.quantity}</p>
+                </div>
+                  <img src={item.product?.image[0]} className="w-10" />
                 </div>
               ))}
             </div>
@@ -302,7 +304,7 @@ const ShippingFormModal = ({
             </div>
 
             {/* ✅ Return Address */}
-            <div className="mt-6 border-t pt-4">
+            {/* <div className="mt-6 border-t pt-4">
               <h3 className="font-semibold mb-3">Return Address</h3>
               {["name", "street", "city", "state", "zip", "country"].map((field) => (
                 <div key={field} className="mb-2">
@@ -316,7 +318,7 @@ const ShippingFormModal = ({
                   />
                 </div>
               ))}
-            </div>
+            </div> */}
 
             {/* Summary */}
             <div className="border-t pt-3 mt-4 space-y-2">

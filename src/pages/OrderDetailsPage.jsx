@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import OrderProgress from "../components/OrderProgress";
 import SummaryApi from "../common/SummaryApi";
 import Axios from "../utils/Axios";
@@ -8,6 +8,7 @@ import ConfirmPopup from "../popUps/OrderConfirmPopup";
 import ShippingFormModal from "../popUps/shippinglable";
 import profile from "../assets/profile.png";
 import ShippingLabelModal from "../popUps/ShippingLabelModal";
+import { CgProfile } from "react-icons/cg";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const OrderDetails = () => {
           ...SummaryApi.getOrderById,
           data: { orderId, userId },
         });
-        console.log("shipping label", res)
+        // console.log("shipping label", res.data)
         setOrderData(res.data);
         // If label exists in order, use it
         if (res.data?.shippingLabelDetails) {
@@ -56,7 +57,7 @@ const OrderDetails = () => {
     if (!orderId) return;
     try {
       const res = await Axios.post("/order/get-label", { orderId });
-      console.log("response",res.data)
+      // console.log("response",res.data)
       if (res.data?.data) {
         setShippingLabel(res.data);
         setOpenLabel(true); // Open modal automatically
@@ -108,7 +109,7 @@ const OrderDetails = () => {
   if (!orderData) return <p className="p-6 text-red-600">No order selected.</p>;
 
   const { order, user, product_details } = orderData;
-// console.log("orderData",shippingLabel)
+// console.log("orderData",orderData.shippingLabelDetails)
   // Totals
   const totals = product_details.reduce(
     (acc, item) => {
@@ -124,15 +125,25 @@ const OrderDetails = () => {
   const finalTotal = totals.totalWithoutDiscount - totals.totalDiscount;
 
   // Shipping cost
-  console.log("shipping labe7777l",shippingLabel)
-  const shippingCost = shippingLabel
-    ? 5 + shippingLabel.weight * 1.5 +
-      (shippingLabel.dimensions?.length *
-        shippingLabel.dimensions?.width *
-        shippingLabel.dimensions?.height) / 5000
-    : 0;
-console.log("shippingLabel",shippingLabel)
-  const grandTotal = (finalTotal + shippingCost).toFixed(2);
+  // console.log("shipping labe7777l",shippingLabel)
+  let shippingCost;
+  if(shippingLabel !== null){
+    shippingCost =  5 + shippingLabel.weight * 1.5 +
+      (shippingLabel.shippingLabelDetails.dimensions?.length *
+        shippingLabel.shippingLabelDetails.dimensions?.width *
+        shippingLabel.shippingLabelDetails.dimensions?.height) / 5000
+  }else{
+    shippingCost = 0
+  }
+  // {shippingLabel === null ? 0 : (
+  //    shippingCost =  5 + shippingLabel.shippingLabelDetails.weight * 1.5 +
+  //     (shippingLabel.shippingLabelDetails.dimensions?.length *
+  //       shippingLabel.shippingLabelDetails.dimensions?.width *
+  //       shippingLabel.shippingLabelDetails.dimensions?.height) / 5000
+  // )
+  //     }
+// console.log("shippingLabel akkkk",shippingLabel.shippingLabelDetails)
+  const grandTotal =shippingCost === 0 ? (finalTotal + shippingCost).toFixed(2): null;
         // console.log("after grand")
   return (
     <div className="p-6 bg-blue-100 min-h-screen">
@@ -144,7 +155,7 @@ console.log("shippingLabel",shippingLabel)
         >
           <FaArrowLeft /> Back to Orders
         </button>
-        <p>Total Orders: {count}</p>
+        {/* <p>Total Orders: {count}</p> */}
       </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -163,12 +174,12 @@ console.log("shippingLabel",shippingLabel)
             </div>
           </div>
           <div className="flex justify-between">
-          <p className="text-gray-500 mb-6">
-            Order date: {new Date(order.createdAt).toLocaleString()}
+          <p>
+            <span className ="font-semibold" >Order Date: </span>{new Date(order.createdAt).toLocaleString()}
           </p>
-          {shippingLabel && (
+          {orderData.shippingLabelDetails && (
               <p>
-                <span className="font-semibold">Delivery Date:</span> {new Date(shippingLabel.deiverydate).toLocaleDateString()}
+                <span className="font-semibold">Delivery Date:</span> {new Date(orderData.shippingLabelDetails.deiverydate).toLocaleDateString()}
               </p>
             )}
             </div>
@@ -176,12 +187,14 @@ console.log("shippingLabel",shippingLabel)
 
           {/* Action Buttons */}
           <div className="flex justify-between my-4">
+            <div>
             {order.status === "Pending" && (
               <button onClick={() => updateOrderStatus("Cancelled")} className="underline text-red-500">
                 Cancel Order
               </button>
             )}
-            <div className="flex gap-2">
+            </div>
+            <div className="text-right gap-2">
               {order.status === "Pending" && (
                 <button
                   onClick={() => setShowConfirmPopup(true)}
@@ -220,20 +233,20 @@ console.log("shippingLabel",shippingLabel)
           {/* Products */}
           <div className="flex justify-between bg-blue-200 px-4 mb-2">
             <h3 className="text-lg font-semibold">Products</h3>
-            {order.status === "Shipped" && (
+            {/* {order.status === "Shipped" && (
               <button
                 onClick={fetchShippingLabel}
                 className="px-4 h-6 bg-green-700 text-white rounded-md hover:bg-green-800"
               >
                 Shipping Label
               </button>
-            )}
+            )} */}
           </div>
 
           <div className="space-y-2 bg-blue-300 rounded-xl">
             {Array.isArray(product_details) &&
               product_details.map((item, idx) => {
-                console.log("item", item)
+                {/* console.log("item", item) */}
                 const price = item.product?.price || item.product_details?.priceAtPurchase || 0;
                 const discount = item.product?.discount || 0;
                 const quantity = item.quantity || 1;
@@ -244,7 +257,7 @@ console.log("shippingLabel",shippingLabel)
                   <div key={item.product?._id || idx} className="flex justify-between items-center border p-3 rounded-xl">
                     <div className="flex items-center gap-4">
                       {item.product?.image?.[0] && (
-                        <img src={item.product.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded" />
+                        <img src={item.product.image[0]} alt={item.product_details?.name} className="w-16 h-16 rounded-lg" />
                       )}
                       <div>
                         <p className="font-semibold">{item.product?.name}</p>
@@ -274,25 +287,27 @@ console.log("shippingLabel",shippingLabel)
             <p className="text-green-600 font-bold">
               <span className="font-semibold">Subtotal:</span>+₹{finalTotal.toFixed(2)}
             </p>
-            <p className="text-green-600 font-bold">
+            {/* { shippingCost !== 0 && <p className="text-green-600 font-bold">
               <span className="font-semibold">Shipping Charges:</span>+₹{shippingCost.toFixed(2)}
             </p>
+            } */}
             
 
             <p className="text-lg font-bold">
-              <span className="font-semibold">Grand Total:</span> ₹{grandTotal}
+              <span className="font-semibold">Grand Total:</span> ₹{finalTotal.toFixed(2)}
             </p>
           </div>
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="bg-blue-200 shadow rounded-xl p-6 space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Customer</h3>
-            <img src={profile} className="rounded-m" alt="profile" />
-            <p className="font-semibold">Name: {user?.name || "Unknown"}</p>
-            <p className="text-sm text-gray-600">Email: {user?.email || "-"}</p>
-            <p className="text-sm text-gray-600">Mobile: {user?.mobile || "-"}</p>
+          <div className="flex col items-center gap-4 mb-6">
+            <CgProfile className="h-16 w-16 text-blue-500 border-2 border-blue-300 rounded-full p-2" />
+            <div>
+              <p className="font-semibold text-gray-800">{user?.name || "Unknown"}</p>
+              <p className="flex items-center text-sm text-gray-600 gap-2"><FaEnvelope className="text-gray-500" /> {user?.email || "-"}</p>
+              <p className="flex items-center text-sm text-gray-600 gap-2"><FaPhoneAlt className="text-gray-500" /> {user?.mobile || "-"}</p>
+            </div>
           </div>
 
           <div>

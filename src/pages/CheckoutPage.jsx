@@ -17,7 +17,7 @@ const CheckoutPage = () => {
   const addressList = useSelector((state) => state.addresses.addressList || []);
   const [selectAddress, setSelectAddress] = useState(null);
   const cartItemsList = useSelector((state) => state.cartItem.cart || []);
-  console.log("cartItems",cartItemsList)
+  // console.log("cartItems",cartItemsList)
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

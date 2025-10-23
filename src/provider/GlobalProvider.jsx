@@ -81,7 +81,7 @@ const GlobalProvider = ( {children} ) => {
       );
       return preve + priceAfterDiscount * curr.quantity;
     }, 0);
-    console.log("totalPrice",tPrice)
+    // console.log("totalPrice",tPrice)
     setTotalPrice(tPrice);
 
     const notDiscountPrice = cartItem.reduce(
@@ -113,7 +113,7 @@ const GlobalProvider = ( {children} ) => {
     const response = await Axios({ ...SummaryApi.getAllOrders });
     const { data: responseData } = response;
 
-    console.log("All Orders API Response:", responseData);
+    // console.log("All Orders API Response:", responseData);
 
     if (responseData.success) {
       // Check what exactly comes from backend
