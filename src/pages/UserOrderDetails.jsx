@@ -45,7 +45,7 @@ const UserOrderDetails = () => {
     if (!orderId) return;
     try {
       const res = await Axios.post("/order/get-label", { orderId });
-      console.log("user order res", res.data.order_details)
+      // console.log("user order res", res.data.order_details)
       if (res.data?.data) {
         setShippingLabel(res.data);
         setOpenLabel(true);
@@ -93,7 +93,7 @@ const UserOrderDetails = () => {
     ? 5 + shippingLabelDetails.weight * 1.5 + (shippingLabelDetails.dimensions?.length * shippingLabelDetails.dimensions?.width * shippingLabelDetails.dimensions?.height) / 5000
     : 0;
   const grandTotal = (finalTotal + shippingCost).toFixed(2);
-console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
+// console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
   // ✅ Razorpay Payment
   const initiateRazorpayPayment = async () => {
     try {
@@ -107,7 +107,7 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
           await Axios.post("/order/update-status", {
             orderId: order.order_Id,
             paymentId: response.razorpay_payment_id,
-            status: "PAID",
+            payment_status: "Paid",
             deliveryDate: new Date()
           });
           alert("Payment Successful ✅");
@@ -148,8 +148,31 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
           <div className="flex justify-between items-center pb-4 mb-2">
             <h2 className="text-2xl font-bold">Order {order.order_Id}</h2>
             <div className="flex gap-2">
-              <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-700">{order.status}</span>
-              <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-700">{order.paymentStatus}</span>
+            <span
+              className={`px-3 py-1 text-sm font-medium rounded-full shadow-sm 
+                ${
+                  order.status === "Pending"
+                    ? "bg-orange-100 text-orange-700"
+                    : ["Confirmed", "Shipped", "Out for Delivery", "Delivered"].includes(order.status)
+                    ? "bg-green-100 text-green-700"
+                    : order.status === "Cancelled"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+            >
+              {order.status}
+            </span>
+              <span
+                className={`px-6 py-1 text-sm rounded-full ${
+                  order.paymentStatus === "Paid"
+                    ? "bg-green-500 text-white"
+                    : order.paymentStatus === "Pending"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {order.paymentStatus}
+              </span>
             </div>
           </div>
           <hr className="border-b border-blue-500 mb-6" />
@@ -162,6 +185,14 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
           {/* Products */}
           <div className="flex justify-between px-4 mt-2 mb-2">
             <h3 className="text-lg font-semibold">Products</h3>
+            {/* {shippingLabelDetails && (
+              <button
+                onClick={fetchShippingLabel}
+                className="px-4 h-6 bg-green-700 text-white rounded-md hover:bg-green-800"
+              >
+                View Shipping Label
+              </button>
+            )} */}
           </div>
           <div className="space-y-2">
             {product_details.map((item, idx) => {
@@ -187,14 +218,14 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
             })}
           </div>
           <div className="flex justify-end mt-3">
-            {shippingLabelDetails && (
+            {/* {shippingLabelDetails && (
               <button
                 onClick={fetchShippingLabel}
                 className="px-4 h-6 bg-green-700 text-white rounded-md hover:bg-green-800"
               >
                 View Shipping Label
               </button>
-            )}
+            )} */}
           </div>
           <div className="bg-blue-300 p-6 rounded-lg mt-6 space-y-4 shadow-md">
               
@@ -232,7 +263,7 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
               
           {/* Payment Section */}
           <div className="mt-6">
-            {order.paymentStatus !== "Paid" && order.status === "Shipped" && (
+            {order.paymentStatus !== "Paid" && order.status === "Confirmed" && (
               <>
                 {/* Existing UPI Button - Keep or Remove as needed */}
                 {/* <button
@@ -259,14 +290,20 @@ console.log(shippingLabel,"hgfdrszeaatdyfugihojk;")
           <h3 className="text-m font-bold text-gray-800 mb-2 pb-2">Customer, Shipping & Company Details</h3>
           <hr className="border-b border-blue-500 mb-6" />
           {/* Customer Section */}
-          <div className="flex items-center gap-4 mb-6">
-            <CgProfile className="h-16 w-16 text-blue-500 border-2 border-blue-300 rounded-full p-2" />
-            <div>
-              <p className="font-semibold text-gray-800">{user?.name || "Unknown"}</p>
-              <p className="flex items-center text-sm text-gray-600 gap-2"><FaEnvelope className="text-gray-500" /> {user?.email || "-"}</p>
-              <p className="flex items-center text-sm text-gray-600 gap-2"><FaPhoneAlt className="text-gray-500" /> {user?.mobile || "-"}</p>
-            </div>
-          </div>
+          <div className="flex flex-col items-center text-center gap-3 mb-6">
+  <CgProfile className="h-16 w-16 text-blue-500 border-2 border-blue-300 rounded-full p-2" />
+
+  <div>
+    <p className="font-semibold text-gray-800">{user?.name || "Unknown"}</p>
+    <p className="flex items-center justify-center text-sm text-gray-600 gap-2">
+      <FaEnvelope className="text-gray-500" /> {user?.email || "-"}
+    </p>
+    <p className="flex items-center justify-center text-sm text-gray-600 gap-2">
+      <FaPhoneAlt className="text-gray-500" /> {user?.mobile || "-"}
+    </p>
+  </div>
+</div>
+
 
           <hr className="border-b border-blue-500 mb-3" />
 

@@ -49,7 +49,7 @@ const Profile = () => {
                 ...SummaryApi.updateUserDetails,
                 data : userData
             })
-            console.log("response",response)
+            // console.log("response",response)
             const { data : responseData } = response
 
             if(responseData.success){

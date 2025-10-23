@@ -13,20 +13,20 @@ const Home = () => {
   const navigate = useNavigate()
 
   const handleRedirectProductListpage = (categoryId, cat) => {
-    console.log(categoryId,"4567890-")
+    // console.log(categoryId,"4567890-")
   const subcategory = subCategoryData.find(sub =>
   sub.categoryId === categoryId
 )
 
 if (!subcategory) {
-  console.warn("No matching subcategory found for categoryId:", categoryId)
+  // console.warn("No matching subcategory found for categoryId:", categoryId)
 }
-console.log("subcategory",subCategoryData)
+// console.log("subcategory",subCategoryData)
 const subName = subcategory ? valideURLConvert(subcategory.name) : "unknown-sub"
 const subId = subcategory ? subcategory.subCategoryId : 0
 const url = `/${valideURLConvert(cat)}-${categoryId}/${subName}-${subId}`
 navigate(url)
-console.log(url)
+// console.log(url)
 };
 
   return (

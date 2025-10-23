@@ -121,13 +121,12 @@ const UserMenu = ({close}) => {
             <Link onClick={handleApiCall} to={"/dashboard/myorders"} className='px-2 hover:bg-blue-200 py-1'><div className='flex'><FaCartPlus  className='mt-1'/> <p className='ml-2'>My Orders</p></div></Link>
             )}            
             <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-blue-200 py-1'><div className='flex'><FaLocationDot  className='mt-1'/> <p className='ml-2'>Save Address</p></div></Link>
-
-            <button onClick={handleLogout} className='text-left px-2 hover:bg-blue-200 py-1'><div className='flex'><RiLogoutCircleFill  className='mt-1'/> <p className='ml-2'>Log out</p></div></button>
             {
               isAdmin(user.role) && (
                 <Link onClick={handleClose} to={"/dashboard/dataImport"} className='px-2 hover:bg-blue-200 py-1'><div className='flex'><CgImport  className='mt-1'/> <p className='ml-2'>Data Import</p></div></Link>
               )
             }
+            <button onClick={handleLogout} className='text-left px-2 hover:bg-blue-200 py-1'><div className='flex'><RiLogoutCircleFill  className='mt-1'/> <p className='ml-2'>Log out</p></div></button>
         </div>
     </div>
   )

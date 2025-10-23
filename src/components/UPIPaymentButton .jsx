@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const UPIPaymentButton = ({ user, cartItems, totalPrice, shippingAddress }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-    console.log("ready",cartItems)
+    // console.log("ready",cartItems)
   const handleOnlinePayment = async () => {
     if (!shippingAddress?.addressId) {
       toast.error("Please select a delivery address");
@@ -55,7 +55,7 @@ const UPIPaymentButton = ({ user, cartItems, totalPrice, shippingAddress }) => {
         theme: { color: "#0ea5e9" },
         handler: async function (response) {
           // 4️⃣ Verify payment on backend
-          console.log("response n roz ",response)
+          // console.log("response n roz ",response)
           try {
             const verifyRes = await Axios.post("/payments/verify", {
               ...response,

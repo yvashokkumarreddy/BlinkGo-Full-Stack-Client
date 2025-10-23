@@ -26,9 +26,9 @@ const ProductAdmin = () => {
       });
 
         const { data : responseData } = response 
-
+      // console.log("ashpkkoko",responseData)
         if(responseData.success){
-          setTotalPageCount(responseData.totalNoPage)
+          setTotalPageCount(responseData.totalPage)
           setProductData(responseData.data)
         }
 
@@ -60,7 +60,7 @@ const ProductAdmin = () => {
 
   const handleOnChange = (e)=>{
     const { value } = e.target
-    console.log("vaukessssss", value)
+    // console.log("vaukessssss", value)
     setSearch(value)
     setPage(1)
   }

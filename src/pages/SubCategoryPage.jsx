@@ -121,11 +121,11 @@ const SubCategoryPage = () => {
 
   return (
     <section>
-      <div className='p-2 bg-white shadow-md flex items-center justify-between'>
+      <div className='p-2 bg-white rounded-md shadow-md flex items-center justify-between'>
         <h2 className='font-semibold'>Sub Category</h2>
         <button
           onClick={() => setOpenAddSubCategory(true)}
-          className='text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded'
+          className='text-sm border border-blue-600 hover:bg-blue-500 px-3 py-1 rounded'
         >
           Add Sub Category
         </button>

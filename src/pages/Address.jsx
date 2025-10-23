@@ -18,7 +18,7 @@ const Address = () => {
   const { fetchAddress } = useGlobalContext()
 
   const handleDisableAddress = async (address_id) => {
-    console.log("address_list",addressList)
+    // console.log("address_list",addressList)
     try {
       const response = await Axios({
         ...SummaryApi.disableAddress,

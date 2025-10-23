@@ -17,7 +17,7 @@ const ProductListPage = () => {
   const AllSubCategory = useSelector(state => state.product.allSubCategory)
   const [DisplaySubCatory, setDisplaySubCategory] = useState([])
 
-  console.log("params",params)
+  // console.log("params",params)
 
   const subCategory = params?.subCategory?.split("-")
   const subCategoryName = subCategory?.slice(0, subCategory?.length - 1)?.join(" ")
@@ -40,7 +40,7 @@ const ProductListPage = () => {
       })
 
       const { data: responseData } = response
-      console.log("data: - ",data)
+      // console.log("data: - ",data)
       if (responseData.success) {
         if (responseData.page == 1) {
           setData(responseData.data)
@@ -68,7 +68,7 @@ const ProductListPage = () => {
   .flat() // flatten nested arrays
   .filter(el => String(el.categoryId) === String(categoryId));
 
-console.log("Matched subcategories:", sub);
+// console.log("Matched subcategories:", sub);
 setDisplaySubCategory(sub);
 
 }, [params, AllSubCategory, categoryId]);
@@ -82,9 +82,9 @@ setDisplaySubCategory(sub);
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
             DisplaySubCatory.map((s) => {
-              console.log("each sub",s)
+              {/* console.log("each sub",s) */}
                const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.categoryId}/${valideURLConvert(s.name)}-${s.subCategoryId}`
-              console.log("subcat",s)
+              {/* console.log("subcat",s) */}
               return (
                 <Link 
                     to={link} 

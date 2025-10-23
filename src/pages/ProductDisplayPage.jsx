@@ -26,14 +26,14 @@ const ProductDisplayPage = () => {
  const fetchProductDetails = async () => {
   try {
     setLoading(true);
-    console.log("➡️ Calling API with productId:", actualProductId);  // add this
+    // console.log("➡️ Calling API with productId:", actualProductId);  // add this
 
     const response = await Axios({
       ...SummaryApi.getProductDetails,
       data: { productId: Number(actualProductId) }, // ensure number
     });
 
-    console.log("✅ API response:", response);
+    // console.log("✅ API response:", response);
     const { data: responseData } = response;
 
     if (responseData.success) {
@@ -186,7 +186,7 @@ const ProductDisplayPage = () => {
         )}
 
         {/* Why Shop Section */}
-        <h2 className="font-semibold">Why shop from binkeyit?</h2>
+        <h2 className="font-semibold">Why shop from Grozaar?</h2>
         <div>
           <div className="flex items-center gap-4 my-4">
             <img src={image1} alt="superfast delivery" className="w-20 h-20" />

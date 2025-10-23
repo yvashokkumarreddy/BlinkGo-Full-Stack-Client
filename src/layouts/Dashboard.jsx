@@ -8,7 +8,7 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 const Dashboard = () => {
   const user = useSelector((state) => state.user)
 
-  console.log("user dashboard:", user)
+  // console.log("user dashboard:", user)
   const handleClose = ()=>{
       if(close){
         close()
